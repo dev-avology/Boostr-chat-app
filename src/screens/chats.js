@@ -40,12 +40,16 @@ const UsersListScreen = ({ chatUsers, handleUserClick, renderStatusIndicator }) 
 };
 
 const GroupsListScreen = ({ chatGroups }) => {
+  const navigation = useNavigation();
+  const goToGroupss = () => {
+    navigation.navigate('GroupChatDashboard'); 
+  };
   return (
     <View style={styles.container}>
       <FlatList
         data={chatGroups}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.groupItem}>
+          <TouchableOpacity style={styles.groupItem} onPress={goToGroupss}>
             <Image source={item.profileImg} style={styles.groupImage} />
             <View style={styles.groupInfo}>
               <Text style={styles.groupName}>{item.name}</Text>
@@ -195,6 +199,7 @@ const ChatUserLists = () => {
         profileImg: require('../assets/user1.png'),
         userCount: 5,
         messageCount: 10,
+        lastMessageTime: 'Yesterday', // Add last message time
       },
       {
         id: '2',
@@ -202,6 +207,7 @@ const ChatUserLists = () => {
         profileImg: require('../assets/user1.png'),
         userCount: 3,
         messageCount: 5,
+        lastMessageTime: 'Yesterday', // Add last message time
       },
       // Add more group data here
     ];

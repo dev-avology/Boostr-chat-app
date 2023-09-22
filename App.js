@@ -14,6 +14,8 @@ import ClubList from './src/screens/ClubList'
 import SettingsPage from './src/screens/Settings'
 import AllUserList from './src/screens/AllUsers'
 import AllGroupsscreen from './src/screens/AllGroups'
+import GroupProfile from './src/screens/GroupProfile'
+import GroupChatDashboard from './src/screens/GroupChatDashboard'
 
 const Stack = createStackNavigator();
 
@@ -32,6 +34,8 @@ const App = () => {
         <Stack.Screen name="SettingsPage" component={SettingsPage} />
         <Stack.Screen name="AllUserList" component={AllUserList} />
         <Stack.Screen name="AllGroups" component={AllGroupsscreen} />
+        <Stack.Screen name="GroupProfile" component={GroupProfile} />
+        <Stack.Screen name="GroupChatDashboard" component={GroupChatDashboard} />
       </Stack.Navigator>
     </NavigationContainer>
   );
