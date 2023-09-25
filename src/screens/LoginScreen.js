@@ -30,6 +30,7 @@ const LoginScreen = ({ navigation }) => {
     }, 2000); // Simulate a 2-second delay
   };
 
+  
   GoogleSignin.configure({
     webClientId: 'YOUR_WEB_CLIENT_ID_HERE',
   });
