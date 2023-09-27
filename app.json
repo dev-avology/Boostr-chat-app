@@ -25,7 +25,7 @@
       "fallbackToCacheTimeout": 0
     },
     "android": {
-      "package": "gl.js.app",
+      "package": "booster.chat.app",
       "permissions": [ "CAMERA", "WRITE_EXTERNAL_STORAGE", "CAMERA_ROLL" ],
       "versionCode": 36
     },
