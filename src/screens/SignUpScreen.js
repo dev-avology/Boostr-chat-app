@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native';
 import { Card, Button as PaperButton } from 'react-native-paper';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const SignUpScreen = () => {
   const [email, setEmail] = useState('');
@@ -19,11 +18,6 @@ const SignUpScreen = () => {
     console.log('Password:', password);
     // You can replace the console.log with your sign-up logic
   };
-
-  // Initialize Google Sign-In
-  GoogleSignin.configure({
-    webClientId: 'YOUR_WEB_CLIENT_ID_HERE', // Replace with your Web Client ID
-  });
 
   return (
     <View style={styles.container}>

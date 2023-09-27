@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'; // Import Axios at the top of your file
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   View,
   Text,
@@ -12,28 +14,66 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Card, Button as PaperButton } from 'react-native-paper';
-import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin';
 import bgImg from '../assets/chat-bg.png';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+   
+  // Use useEffect to check for userData when the component mounts
+  useEffect(() => {
+    const checkUserData = async () => {
+      const value = await AsyncStorage.getItem('user');
+      if (value !== null) {
+        navigation.navigate('ClubList'); // Redirect immediately if userData is available
+        return;
+      }
+    };
 
-  const handleLogin = () => {
-    setIsLoading(true);
+    checkUserData();
+  }, [navigation]);
 
-    // Simulate a delay (replace this with your actual login logic)
-    setTimeout(() => {
-      setIsLoading(false);
-      navigation.navigate('ClubList');
-    }, 2000); // Simulate a 2-second delay
-  };
+  const handleLogin = async () => {
+  setIsLoading(true);
 
+  try {
+    const response = await axios.post('https://staging3.booostr.co/wp-json/chat-api/v1/login', {
+      username: email, // Replace with the actual email value
+      password: password, // Replace with the actual password value
+    });
+
+    console.log('API Response:', response);
+
+    if (response && response.data) {
+      const { data } = response.data;
+
+      if (data) {
+        // Token is defined, proceed with storing it and navigating to the next screen
+        await AsyncStorage.setItem('user', JSON.stringify(data));
+        navigation.navigate('ClubList');
+      } else {
+        // Token is not provided in the API response
+        console.error('API Error: Token is not provided in the response');
+        // Handle this case by displaying an error message to the user
+        // For example, you can set a message in a variable to show an error alert.
+        alert('Login failed. Please check your credentials.');
+      }
+    } else {
+      // Handle the case where the response or response.data is undefined
+      console.error('API Error: Response or response.data is undefined');
+      // Handle login failure here, show an error message to the user
+      alert('Login failed. Please try again later.');
+    }
+  } catch (error) {
+    console.error('API Error:', error.response ? error.response.data.message : error.message);
+    // Handle login failure here, show an error message to the user
+    alert('Login failed. Please try again later.');
+  } finally {
+    setIsLoading(false);
+  }
+};
   
-  GoogleSignin.configure({
-    webClientId: 'YOUR_WEB_CLIENT_ID_HERE',
-  });
 
   const handleForgotPassword = () => {
     navigation.navigate('ForgotPassword');

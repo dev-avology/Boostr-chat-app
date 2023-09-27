@@ -1,10 +1,40 @@
 {
   "expo": {
-    "name": "MyReactNativeApp",
-    "slug": "MyReactNativeApp",
+    "name": "Booster Chat",
+    "slug": "booostr-chat",
+    "platforms": [ "ios", "android" ],
     "version": "1.0.0",
+    "splash": {
+      "image": "./src/assets/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#fdfdfd"
+    },
+    "icon": "./src/assets/icon.png",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "9487759b-6073-44e0-aeb3-e2f2cbb732c8"
+      }
+    },
+    "owner": "devavology",
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "url": "https://u.expo.dev/9487759b-6073-44e0-aeb3-e2f2cbb732c8",
+      "fallbackToCacheTimeout": 0
+    },
+    "android": {
+      "package": "gl.js.app",
+      "permissions": [ "CAMERA", "WRITE_EXTERNAL_STORAGE", "CAMERA_ROLL" ],
+      "versionCode": 36
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "gl.js.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to let user put a photo in his profile page."
+      }
+  }
   }
 }

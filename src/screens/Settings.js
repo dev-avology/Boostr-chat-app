@@ -1,17 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground } from 'react-native';
 import user1Img from '../assets/user3.png';
 import bgImg from '../assets/chat-bg.png';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import BottomNavBar from '../navigation/BottomNavBar';
+import { checkUserData } from './authUtils';
 
 const SettingsPage = () => {
   const navigation = useNavigation();
+ 
+  const [userData, setUserData] = useState(null);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const user = await checkUserData();
+      //console.log('Fetched user data:', user);
+      if (user) {
+        setUserData(user);
+      }
+    };
 
-  const handleBack = () => {
-    navigation.goBack();
-  };
+    fetchUserData();
+  }, []);
+
 
   const handleChangeName = () => {
     // Add logic for changing name here
@@ -23,6 +34,14 @@ const SettingsPage = () => {
 
   const handleChangeEmail = () => {
     // Add logic for changing email here
+  };
+
+  const handleLogout = () => {
+    // Add logic for logout here
+  };
+
+  const handleBack = () => {
+    navigation.goBack();
   };
 
 
@@ -38,23 +57,25 @@ const SettingsPage = () => {
          </View>
         </View>
         <View style={styles.card}>
+        {userData ? (
+          <>
           <Image source={user1Img} style={styles.userImage} />
-          <Text style={styles.userName}>George</Text>
-          <Text style={styles.userStatus}>active</Text>
-          <View style={styles.mainBox}>
-           {/*} <TouchableOpacity style={styles.optionButton} onPress={handleChangeName}>
-              <Text style={styles.optionButtonText}>Change Name</Text>
-            </TouchableOpacity>*/}
-            <TouchableOpacity style={styles.optionButton} onPress={handleChangePassword}>
-              <Text style={styles.optionButtonText}>Change Password</Text>
-            </TouchableOpacity>
-           {/*} <TouchableOpacity style={styles.optionButton} onPress={handleChangeEmail}>
-              <Text style={styles.optionButtonText}>Change Email</Text>
-            </TouchableOpacity>*/}
-            <TouchableOpacity style={styles.optionButton} onPress={handleLogout}>
-              <Text style={styles.optionButtonText}>Logout</Text>
-            </TouchableOpacity>
-          </View>
+          <Text style={styles.userName}>{userData.display_name}</Text>
+          <Text style={styles.userStatus}>{userData.user_email}</Text>
+          </>
+        ) : null}
+
+        <View style={styles.mainBox}>
+          
+          <TouchableOpacity style={styles.optionButton} onPress={handleChangePassword}>
+            <Text style={styles.optionButtonText}>Change Password</Text>
+          </TouchableOpacity>
+        
+          <TouchableOpacity style={styles.optionButton} onPress={handleLogout}>
+            <Text style={styles.optionButtonText}>Logout</Text>
+          </TouchableOpacity>
+      
+        </View>
         </View>
       </View>
       <BottomNavBar />

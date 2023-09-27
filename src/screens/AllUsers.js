@@ -4,6 +4,7 @@ import { AntDesign, FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import BottomNavBar from '../navigation/BottomNavBar';
+import { checkUserData } from './authUtils';
 
 const Stack = createStackNavigator();
 
@@ -11,6 +12,19 @@ const AllUserListScreen = () => {
   const navigation = useNavigation();
 
   const [chatUsers, setChatUsers] = useState([]);
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const user = await checkUserData('https://staging3.booostr.co/wp-json/chat-api/v1/chat_user_get_list_of_contacts');
+      console.log('Fetched user data:', user);
+      if (user) {
+        setUserData(user);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   useEffect(() => {
     const fetchedChatUsers = [
@@ -82,14 +96,18 @@ const AllUserListScreen = () => {
           <TouchableOpacity
             style={styles.userItem}
           >
+            {userData ? (
+              <>
             <View style={styles.statusContainer}>
               <Image source={item.profileImg} style={styles.userImage} />
               {renderStatusIndicator(item.status)}
             </View>
             <View style={styles.userInfo}>
-              <Text style={styles.userName}>{item.name}</Text>
-              <Text style={styles.lastMessage}>{item.lastMessage}</Text>
+              <Text style={styles.userName}>{userData.user_nicename}</Text>
+              <Text style={styles.lastMessage}>{userData.user_status}</Text>
             </View>
+            </>
+            ) : null }
           </TouchableOpacity>
         )}
         keyExtractor={(item) => item.id}

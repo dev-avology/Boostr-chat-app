@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput,ImageBackground,ScrollView } from 'react-native';
 import { Card, Button as PaperButton } from 'react-native-paper';
-import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin';
 import bgImg from '../assets/chat-bg.png';
 
 const ForgotPasswordScreen = ({navigation}) => {

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
   View,
   Text,
@@ -11,14 +12,29 @@ import {
 import { AntDesign, FontAwesome } from '@expo/vector-icons'; // Import icons
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation from react-navigation/native
 import BottomNavBar from '../navigation/BottomNavBar';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const ClubList = () => {
   const navigation = useNavigation(); // Initialize navigation
 
   const [clubs, setClubs] = useState([]);
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const [userData, setUserData] = useState(null);
 
+  useEffect(() => {
+    const checkUserData = async () => {
+      const value = await AsyncStorage.getItem('user');
+      if (value !== null) {
+        const parsedUserData = JSON.parse(value);
+        setUserData(parsedUserData); // Set the userData state with the parsed data
+      }
+    };
+
+    checkUserData();
+  }, []);
+
+
+  
   useEffect(() => {
     // Fetch your club data and update clubs state
     // Replace this with your actual data fetching logic
@@ -129,7 +145,7 @@ const ClubList = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <Text style={styles.headerText}>Select a Club</Text>
+          <Text style={styles.headerText}>Select a Club {userData?.display_name}</Text>
           <Text style={styles.wrapText}>Choose a club you support or manage to join a chat.</Text>
         </View>
         <View style={styles.headerRight}>
