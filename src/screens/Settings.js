@@ -25,9 +25,6 @@ const SettingsPage = () => {
     // Add logic for changing email here
   };
 
-  const handleLogout = () => {
-    // Add logic for logout here
-  };
 
   return (
     <ImageBackground style={styles.img_top} source={bgImg} resizeMode="cover">
