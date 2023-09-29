@@ -23,6 +23,7 @@ const UserProfile = () => {
   { name: 'Club 6', role: 'Admin' },*/}
   ];
 
+  
   return (
     <ImageBackground style={styles.img_top} source={bgImg} resizeMode="cover">
       <View style={styles.container}>
