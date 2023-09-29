@@ -17,10 +17,10 @@ const UserProfile = () => {
   const clubList = [
     { name: 'Club 1', role: 'Member' },
     { name: 'Club 2', role: 'Moderator' },
-    { name: 'Club 3', role: 'Admin' },
+    {/*{ name: 'Club 3', role: 'Admin' },
     { name: 'Club 4', role: 'Member' },
     { name: 'Club 5', role: 'Moderator' },
-    { name: 'Club 6', role: 'Admin' },
+  { name: 'Club 6', role: 'Admin' },*/}
   ];
 
   return (
@@ -36,7 +36,7 @@ const UserProfile = () => {
           <Text style={styles.userName}>George</Text>
           <Text style={styles.userStatus}>active</Text>
           <Text style={styles.emailText}>Youremail@gmail.com</Text>
-          <View style={styles.clubListContainer}>
+          <ScrollView style={styles.clubListContainer}>
             {/* Mapping the club list */}
             {clubList.map((club, index) => (
               <TouchableOpacity
@@ -51,7 +51,7 @@ const UserProfile = () => {
                 <Text style={styles.clubRole}>{club.role}</Text>
               </TouchableOpacity>
             ))}
-          </View>
+          </ScrollView>
         </View>
       </View>
       <BottomNavBar />
