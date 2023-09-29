@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput,ImageBackground,ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput,ImageBackground } from 'react-native';
 import { Card, Button as PaperButton } from 'react-native-paper';
 import bgImg from '../assets/chat-bg.png';
 
@@ -20,7 +20,7 @@ const ForgotPasswordScreen = ({navigation}) => {
   const image = { uri: imgProps };
 
   return (
-    <ScrollView style={[styles.top_main]} contentContainerStyle={{ flexGrow: 1 }}>
+    <View style={[styles.top_main]} contentContainerStyle={{ flexGrow: 1 }}>
     <ImageBackground style={styles.img_top} source={image} resizeMode="cover">
     <View style={styles.container}>
       <View style={styles.card}>
@@ -46,7 +46,7 @@ const ForgotPasswordScreen = ({navigation}) => {
       </View>
     </View>
     </ImageBackground>
-    </ScrollView>
+    </View>
   );
 };
 

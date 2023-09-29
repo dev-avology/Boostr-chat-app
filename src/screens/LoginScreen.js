@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   TextInput,
   ImageBackground,
-  ScrollView,
   Linking,
   ActivityIndicator,
 } from 'react-native';
@@ -83,7 +82,7 @@ const LoginScreen = ({ navigation }) => {
   const image = { uri: imgProps };
 
   return (
-    <ScrollView style={[styles.top_main]} contentContainerStyle={{ flexGrow: 1 }}>
+    <View style={[styles.top_main]} contentContainerStyle={{ flexGrow: 1 }}>
       <ImageBackground style={styles.img_top} source={image} resizeMode="cover">
         <View style={styles.container}>
           <View style={styles.logoBox}>
@@ -136,7 +135,7 @@ const LoginScreen = ({ navigation }) => {
           </View>
         </View>
       </ImageBackground>
-    </ScrollView>
+    </View>
   );
 };
 

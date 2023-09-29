@@ -6,9 +6,9 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "splash": {
-      "image": "./src/assets/logo.png",
+      "image": "./src/assets/spl-logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#fdfdfd"
+      "backgroundColor": "#00c2ff"
     },
     "icon": "./src/assets/icon.png",
     "assetBundlePatterns": [

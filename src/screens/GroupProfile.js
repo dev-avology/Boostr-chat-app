@@ -43,7 +43,7 @@ const GroupProfile = () => {
           <Text style={styles.groupName}>{groupInfo.groupName}</Text>
         {/* <Text style={styles.groupStatus}>{groupInfo.groupStatus}</Text>*/}
           <Text style={styles.emailText}>{groupInfo.groupEmail}</Text>
-          <ScrollView style={styles.memberListContainer}>
+          <View style={styles.memberListContainer}>
             {/* Mapping the group members */}
             {groupMembers.map((member, index) => (
               <View style={styles.memberListItem} key={index}>
@@ -61,7 +61,7 @@ const GroupProfile = () => {
                 </View>
               </View>
             ))}
-          </ScrollView>
+          </View>
         </View>
       </View>
       <BottomNavBar />

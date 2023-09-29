@@ -36,7 +36,7 @@ const UserProfile = () => {
           <Text style={styles.userName}>George</Text>
           <Text style={styles.userStatus}>active</Text>
           <Text style={styles.emailText}>Youremail@gmail.com</Text>
-          <ScrollView style={styles.clubListContainer}>
+          <View style={styles.clubListContainer}>
             {/* Mapping the club list */}
             {clubList.map((club, index) => (
               <TouchableOpacity
@@ -51,7 +51,7 @@ const UserProfile = () => {
                 <Text style={styles.clubRole}>{club.role}</Text>
               </TouchableOpacity>
             ))}
-          </ScrollView>
+          </View>
         </View>
       </View>
       <BottomNavBar />

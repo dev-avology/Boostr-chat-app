@@ -22,7 +22,7 @@ const SelectProfileScreen = () => {
   const image = { uri: imgProps };
 
   return (
-    <ScrollView style={[styles.top_main]} contentContainerStyle={{ flexGrow: 1 }}>
+    <View style={[styles.top_main]} contentContainerStyle={{ flexGrow: 1 }}>
       <ImageBackground style={styles.img_top} source={image} resizeMode="cover">
         <View style={styles.container}>
           <View style={styles.card}>
@@ -37,7 +37,7 @@ const SelectProfileScreen = () => {
           </View>
         </View>
       </ImageBackground>
-    </ScrollView>
+    </View>
   );
 };
 

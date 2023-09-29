@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './src/screens/LoginScreen';
 import SignUpScreen from './src/screens/SignUpScreen';
 import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen';
@@ -17,7 +17,7 @@ import AllGroupsscreen from './src/screens/AllGroups'
 import GroupProfile from './src/screens/GroupProfile'
 import GroupChatDashboard from './src/screens/GroupChatDashboard'
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
