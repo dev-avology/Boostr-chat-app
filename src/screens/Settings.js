@@ -5,25 +5,30 @@ import bgImg from '../assets/chat-bg.png';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import BottomNavBar from '../navigation/BottomNavBar';
-import { checkUserData } from './authUtils';
-
+import { useDispatch, useSelector } from "react-redux";
+import { logout, getUserData } from "../actions/auth";
 const SettingsPage = () => {
   const navigation = useNavigation();
- 
+  const CurrentUserID = useSelector((state) => JSON.parse(state.auth.CurrentUserID));
+  const isLoggedIn = useSelector((state) => JSON.parse(state.auth.isLoggedIn));
+  const dispatch = useDispatch();
   const [userData, setUserData] = useState(null);
+
   useEffect(() => {
-    const fetchUserData = async () => {
-      const user = await checkUserData();
-      //console.log('Fetched user data:', user);
-      if (user) {
-        setUserData(user);
+    const getUserData1 = async () => {
+      try {
+        const response = dispatch(getUserData(CurrentUserID));
+        // Update userData state with the response data
+        setUserData(response);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
       }
     };
 
-    fetchUserData();
-  }, []);
+    getUserData1();
+  }, [CurrentUserID]);
 
-
+  
   const handleChangeName = () => {
     // Add logic for changing name here
   };
@@ -37,7 +42,11 @@ const SettingsPage = () => {
   };
 
   const handleLogout = () => {
-    // Add logic for logout here
+    dispatch(logout()).then((response) => {
+      if (response.status === "success") {
+        navigation.navigate("Login");
+      }
+    });
   };
 
   const handleBack = () => {
@@ -60,7 +69,7 @@ const SettingsPage = () => {
         {userData ? (
           <>
           <Image source={user1Img} style={styles.userImage} />
-          <Text style={styles.userName}>{userData.display_name}</Text>
+          <Text style={styles.userName}>{userData?.display_name} {userData?.last_name}</Text>
           <Text style={styles.userStatus}>{userData.user_email}</Text>
           </>
         ) : null}

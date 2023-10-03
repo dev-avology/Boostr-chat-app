@@ -104,7 +104,6 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     fontSize: 15,
     backgroundColor: '#e7effc',
-    fontFamily: 'Open Sans',
     lineHeight: 19,
     fontWeight: '400',
     fontStyle: 'normal',
