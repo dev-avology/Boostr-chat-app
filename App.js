@@ -1,7 +1,7 @@
 // App.js
 
 import React, { useEffect, useState } from "react";
-import { useDispatch } from 'react-redux';
+import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
@@ -25,33 +25,41 @@ import { setCurrentUserID } from "./src/reducers/loginReducer";
 const Stack = createNativeStackNavigator();
 
 const App = () => {
-  
   const dispatch = useDispatch();
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const user_id = JSON.parse(await AsyncStorage.getItem('user_id'));
-        if(user_id !== null)
+        const storedUserId = await AsyncStorage.getItem("user_id");
+        let user_id;
+
+        try {
+          user_id = JSON.parse(storedUserId);
+        } catch (parseError) {
+          console.error("Error parsing user_id:", parseError);
+          user_id = null; // Set user_id to null if parsing fails
+        }
+
+        if (user_id !== null) {
+          // Dispatch an action to set the current user ID
           dispatch(setCurrentUserID(user_id));
+        }
       } catch (error) {
-        console.error('Error fetching user_id:', error);
+        console.error("Error fetching user_id:", error);
       }
     };
 
     fetchData();
   }, [dispatch]);
 
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-
   return (
     <SafeAreaProvider style={{ flex: 1 }}>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName={isLoggedIn ? "ClubList" : "Login"}
+          initialRouteName="Login"
           screenOptions={{ headerShown: false }}
         >
-          {isLoggedIn ? (
-            <><Stack.Screen name="ChatUserLists" component={ChatUserLists} />
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="ChatUserLists" component={ChatUserLists} />
           <Stack.Screen name="ChatDashboard" component={ChatDashboard} />
           <Stack.Screen name="UserProfile" component={UserProfile} />
           <Stack.Screen name="SelectProfile" component={SelectProfileScreen} />
@@ -63,19 +71,13 @@ const App = () => {
           <Stack.Screen
             name="GroupChatDashboard"
             component={GroupChatDashboard}
-          /></>) : null
-          }
-          {/* Only allow access to these screens if logged in */}
-          {isLoggedIn ? null : (
-            <>
-              <Stack.Screen name="Login" component={LoginScreen} />
-              <Stack.Screen name="SignUp" component={SignUpScreen} />
-              <Stack.Screen
-                name="ForgotPassword"
-                component={ForgotPasswordScreen}
-              />
-            </>
-          )}
+          />
+
+          <Stack.Screen name="SignUp" component={SignUpScreen} />
+          <Stack.Screen
+            name="ForgotPassword"
+            component={ForgotPasswordScreen}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
-
+import { resetAllStates } from "./resetSlice";
 const initialState = {
   isLoggedIn: false,
   CurrentUserID: null,
@@ -13,6 +13,11 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    loginRequest: (state) => {
+      state.loading = true;
+      state.isLoggedIn = false;
+      state.error = false;
+    },
     loginSuccess: (state, action) => {
       state.loading = false;
       state.isLoggedIn = true;
@@ -24,17 +29,20 @@ const authSlice = createSlice({
       state.isLoggedIn = false;
       state.error = true;
     },
-    logout: (state) => {
-      state.isLoggedIn = false;
-      // Reset other state properties when the user logs out
-    },
     setCurrentUserID: (state, action) => {
       state.CurrentUserID = action.payload;
       state.isLoggedIn = true;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(resetAllStates, (state) => {
+      // Reset the auth state to its initial values
+      return { ...initialState };
+    });
+  },
 });
 
-export const { login, loginSuccess, loginError, logout, setCurrentUserID } = authSlice.actions;
+export const { loginRequest, loginSuccess, loginError, setCurrentUserID } =
+  authSlice.actions;
 
 export default authSlice.reducer;

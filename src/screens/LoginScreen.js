@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios"; // Import Axios at the top of your file
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useState } from "react";
 import { login } from "../actions/auth";
+import { useSelector } from "react-redux";
 import {
   View,
   Text,
@@ -13,17 +12,34 @@ import {
   Linking,
   ActivityIndicator,
 } from "react-native";
-import { Card, Button as PaperButton } from "react-native-paper";
+import { Button as PaperButton } from "react-native-paper";
 import bgImg from "../assets/chat-bg.png";
 import { useDispatch } from "react-redux";
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const loading = useSelector((state) => state.auth.loading);
   const dispatch = useDispatch();
-
   const handleLogin = () => {
+    if (!email || !password) {
+      // Check if email or password is empty
+      alert("Please enter both email/username and password.");
+      return;
+    }
+
+    if (!email) {
+      // Check if email is empty
+      alert("Please enter your email or username.");
+      return;
+    }
+
+    if (!password) {
+      // Check if password is empty
+      alert("Please enter your password.");
+      return;
+    }
+
     let user = {
       username: email,
       password: password,
@@ -31,56 +47,10 @@ const LoginScreen = ({ navigation }) => {
     dispatch(login(user))
       .then((response) => {
         if (response.status == "success") {
-          navigation.replace("ClubList");
+          navigation.navigate("ClubList");
         }
       })
-      .catch((error) => {
-        //navigation.replace("Login");
-      });
-  };
-
-  const handleLogin1 = async () => {
-    setIsLoading(true);
-
-    try {
-      const response = await axios.post(
-        "https://staging3.booostr.co/wp-json/chat-api/v1/login",
-        {
-          username: email, // Replace with the actual email value
-          password: password, // Replace with the actual password value
-        }
-      );
-
-      if (response && response.data) {
-        const { data } = response.data;
-
-        if (data) {
-          // Token is defined, proceed with storing it and navigating to the next screen
-          await AsyncStorage.setItem("user", JSON.stringify(data));
-          navigation.navigate("ClubList");
-        } else {
-          // Token is not provided in the API response
-          console.error("API Error: Token is not provided in the response");
-          // Handle this case by displaying an error message to the user
-          // For example, you can set a message in a variable to show an error alert.
-          alert("Login failed. Please check your credentials.");
-        }
-      } else {
-        // Handle the case where the response or response.data is undefined
-        console.error("API Error: Response or response.data is undefined");
-        // Handle login failure here, show an error message to the user
-        alert("Login failed. Please try again later.");
-      }
-    } catch (error) {
-      console.error(
-        "API Error:",
-        error.response ? error.response.data.message : error.message
-      );
-      // Handle login failure here, show an error message to the user
-      alert("Login failed. Please try again later.");
-    } finally {
-      setIsLoading(false);
-    }
+      .catch((error) => {});
   };
 
   const handleForgotPassword = () => {
@@ -116,7 +86,7 @@ const LoginScreen = ({ navigation }) => {
               onChangeText={(text) => setPassword(text)}
               value={password}
             />
-            {isLoading ? (
+            {loading ? (
               <View style={styles.loader}>
                 <ActivityIndicator size="medium" color="#00c0ff" />
               </View>
@@ -125,7 +95,7 @@ const LoginScreen = ({ navigation }) => {
                 mode="contained"
                 style={styles.button}
                 onPress={handleLogin}
-                disabled={isLoading}
+                disabled={loading}
               >
                 <Text style={styles.buttonText}>Login</Text>
               </PaperButton>
