@@ -84,7 +84,10 @@ const ClubList = ({ navigation }) => {
   }, [clubList, loading, error]);
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#000" />;
+    return (<View style={styles.containerLoader}>
+     <ActivityIndicator size="large" color="#000" />
+    </View>)
+
   }
 
   return (
@@ -116,7 +119,7 @@ const ClubList = ({ navigation }) => {
             keyExtractor={(item) => item.post_id}
           />
         ) : (
-          <Text>No clubs found.</Text>
+          <Text style={styles.notFound}>No clubs found.</Text>
         )}
       </View>
       <BottomNavBar />
@@ -211,6 +214,16 @@ const styles = StyleSheet.create({
     height: 40,
     paddingVertical: 0,
   },
+  notFound:{
+    textAlign:'center',
+    fontSize:20,
+    padding:20,
+  },
+  containerLoader:{
+    flex:1,
+    alignItems: "center",
+    justifyContent:"center"
+  }
 });
 
 export default ClubList;
