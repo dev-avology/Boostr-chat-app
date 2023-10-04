@@ -47,7 +47,11 @@ const LoginScreen = ({ navigation }) => {
     dispatch(login(user))
       .then((response) => {
         if (response.status == "success") {
-          navigation.navigate("ClubList");
+          //navigation.navigate("ClubList");
+          navigation.reset({
+            index: 1,
+            routes: [{ name: "ClubList" }],
+          });
         }
       })
       .catch((error) => {});

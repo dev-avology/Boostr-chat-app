@@ -60,11 +60,11 @@ const App = () => {
           screenOptions={{ headerShown: false }}
         >
           <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="ClubList" component={ClubList} />
           <Stack.Screen name="ChatUserLists" component={ChatUserLists} />
           <Stack.Screen name="ChatDashboard" component={ChatDashboard} />
           <Stack.Screen name="UserProfile" component={UserProfile} />
           <Stack.Screen name="SelectProfile" component={SelectProfileScreen} />
-          <Stack.Screen name="ClubList" component={ClubList} />
           <Stack.Screen name="SettingsPage" component={SettingsPage} />
           <Stack.Screen name="AllUserList" component={AllUserList} />
           <Stack.Screen name="AllGroups" component={AllGroupsscreen} />
