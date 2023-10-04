@@ -30,7 +30,6 @@ const SettingsPage = ({ navigation }) => {
         // Update userData state with the response data
         setUserData(JSON.parse(response.data));
       } catch (error) {
-        console.error("Error fetching user data:", error);
       }
     };
 

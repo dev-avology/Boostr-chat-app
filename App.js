@@ -26,6 +26,7 @@ const Stack = createNativeStackNavigator();
 
 const App = () => {
   const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -55,7 +56,7 @@ const App = () => {
     <SafeAreaProvider style={{ flex: 1 }}>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="Login"
+          initialRouteName={isLoggedIn ? "ClubList" : "Login"}
           screenOptions={{ headerShown: false }}
         >
           <Stack.Screen name="Login" component={LoginScreen} />
