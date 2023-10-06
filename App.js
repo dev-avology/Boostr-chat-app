@@ -1,12 +1,10 @@
 // App.js
 
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import LoginScreen from "./src/screens/LoginScreen";
 import SignUpScreen from "./src/screens/SignUpScreen";
 import ForgotPasswordScreen from "./src/screens/ForgotPasswordScreen";
@@ -20,19 +18,17 @@ import AllUserList from "./src/screens/AllUsers";
 import AllGroupsscreen from "./src/screens/AllGroups";
 import GroupProfile from "./src/screens/GroupProfile";
 import GroupChatDashboard from "./src/screens/GroupChatDashboard";
-import { setCurrentUserID } from "./src/reducers/loginReducer";
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
-  const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const storedUserId = await AsyncStorage.getItem("user_id");
         let user_id;
-
         try {
           user_id = JSON.parse(storedUserId);
         } catch (parseError) {
@@ -42,7 +38,7 @@ const App = () => {
 
         if (user_id !== null) {
           // Dispatch an action to set the current user ID
-          dispatch(setCurrentUserID(user_id));
+          dispatch(setCurrentUseData(user_id));
         }
       } catch (error) {
         console.error("Error fetching user_id:", error);

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-
+import { CHAT_API_URL } from '../config';
 const clubSlice = createSlice({
   name: 'clubs',
   initialState: {
@@ -34,10 +34,9 @@ export const fetchClubList = (userId) => async (dispatch) => {
   try {
     
     dispatch(fetchClubListStart());
-    const response = await axios.get(`https://staging3.booostr.co/wp-json/chat-api/v1/get_club_list?user_id=${userId}`);
+    const response = await axios.get(`${CHAT_API_URL}/get_club_list?user_id=${userId}`);
     dispatch(fetchClubListSuccess(JSON.stringify(response.data)));
   } catch (error) {
-    console.log(userId);
     dispatch(fetchClubListFailure(error));
   }
 };

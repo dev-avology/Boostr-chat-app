@@ -10,17 +10,18 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { AntDesign, FontAwesome } from "@expo/vector-icons"; // Import icons
-import { useNavigation } from "@react-navigation/native"; // Import useNavigation from react-navigation/native
 import BottomNavBar from "../navigation/BottomNavBar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fetchClubList } from "../reducers/clubListSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { memoizedSelectclubList } from '../selectors';
+import { useFocusEffect } from '@react-navigation/native';
+
 const ClubList = ({ navigation }) => {
   const dispatch = useDispatch();
   const [clubs, setClubs] = useState([]);
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [userData, setUserData] = useState(null);
 
   const handleClubClick = (club) => {
     navigation.navigate("ChatUserLists", { club });
@@ -50,30 +51,37 @@ const ClubList = ({ navigation }) => {
     </TouchableOpacity>
   );
 
-  const CurrentUserID = useSelector((state) =>
-    JSON.parse(state.auth.CurrentUserID)
-  );
-  const clubList = useSelector((state) => state.clubList.clubs);
+  const CurrentUserID = useSelector((state) => JSON.parse(state.auth.userData)?.user_id);
+  const clubList = useSelector(memoizedSelectclubList);
   const loading = useSelector((state) => state.clubList.loading);
   const error = useSelector((state) => state.clubList.error);
 
-  useEffect(() => {
-    dispatch(fetchClubList(CurrentUserID));
-  }, [dispatch, CurrentUserID]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchData = async () => {
+        try {
+          if (CurrentUserID) {
+            dispatch(fetchClubList(CurrentUserID));
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+  
+      fetchData();
+    }, [])
+  );
 
    useEffect(() => {
     if (!loading && !error) {
       try {
-        if (clubList && typeof clubList === 'string' && clubList.trim() !== '') {
-          const parsedClubList = JSON.parse(clubList);
+          const parsedClubList = clubList;
           if (parsedClubList && Array.isArray(parsedClubList.clubs)) {
-            setClubs(parsedClubList.clubs);
+            setClubs(parsedClubList?.clubs);
           } else {
             setClubs([]);
           }
-        } else {
-          setClubs([]);
-        }
       } catch (parseError) {
         console.error('Error parsing clubList:', parseError);
         setClubs([]);
@@ -82,13 +90,6 @@ const ClubList = ({ navigation }) => {
       setClubs([]);
     }
   }, [clubList, loading, error]);
-
-  if (loading) {
-    return (<View style={styles.containerLoader}>
-     <ActivityIndicator size="large" color="#000" />
-    </View>)
-
-  }
 
   return (
     <View style={styles.container}>
@@ -108,18 +109,22 @@ const ClubList = ({ navigation }) => {
       </View>
       {isSearchBarVisible && <View style={styles.searchBarSpace} />}
       <View style={styles.clubListContainer}>
-        {clubs.length > 0 ? (
-          <SectionList
-            sections={[
-              {
-                data: clubs,
-              },
-            ]}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.post_id}
-          />
-        ) : (
-          <Text style={styles.notFound}>No clubs found.</Text>
+        {loading ? (
+            <View style={styles.containerLoader}>
+              <ActivityIndicator size="large" color="#000" />
+            </View>
+          ) : clubs.length > 0 ? (
+            <SectionList
+              sections={[
+                {
+                  data: clubs,
+                },
+              ]}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.post_id}
+            />
+          ) : (
+            <Text style={styles.notFound}>No clubs found.</Text>
         )}
       </View>
       <BottomNavBar />

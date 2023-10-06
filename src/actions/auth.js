@@ -12,8 +12,8 @@ export const login = (user) => (dispatch) => {
     .then(
       (response) => {
         if (response.status === "success") {
-          let user_id = response.user_id;
-          dispatch(loginSuccess(user_id));
+          let userdata = response.userdata;
+          dispatch(loginSuccess(userdata));
           Promise.resolve();
           return response;
         }
