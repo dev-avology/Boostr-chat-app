@@ -27,33 +27,42 @@ const UsersListScreen = ({
     <View style={styles.container}>
       <FlatList
         data={chatUsers}
-        renderItem={({ item }) => (
+        renderItem={({ item }) =>
           item?.participants.map((participant) => (
             <TouchableOpacity
-            style={styles.userItem}
-            onPress={() => handleUserClick(item)}
-          >
-            <View style={styles.statusContainer}>
-              <Image source={{ uri: participant?.user_photo }} style={styles.userImage} />
-              {renderStatusIndicator(item?.status)}
-            </View>
-            <View style={styles.userInfo}>
-              <Text style={styles.userName}>
-                {participant?.first_name} {participant?.last_name}
-              </Text>
-              <Text style={styles.lastMessage}>{participant?.lastMessage}</Text>
-            </View>
-            <View style={styles.messageDetails}>
-              <View style={styles.messageCountContainer}>
-                <Text style={styles.messageCount}>{item?.unread_count}</Text>
+              style={styles.userItem}
+              onPress={() => handleUserClick(item)}
+            >
+              <View style={styles.statusContainer}>
+                <Image
+                  source={{ uri: participant?.user_photo }}
+                  style={styles.userImage}
+                />
+                {renderStatusIndicator(item?.status)}
               </View>
-              <Text style={styles.lastMessageTime}>
-                {item?.lastMessageTime}
-              </Text>
-            </View>
-          </TouchableOpacity>
+              <View style={styles.userInfo}>
+                <Text style={styles.userName}>
+                  {participant?.first_name} {participant?.last_name}
+                </Text>
+                <Text style={styles.lastMessage}>
+                  {participant?.lastMessage}
+                </Text>
+              </View>
+              <View style={styles.messageDetails}>
+                {item?.unread_count ? (
+                  <View style={styles.messageCountContainer}>
+                    <Text style={styles.messageCount}>
+                      {item?.unread_count}
+                    </Text>
+                  </View>
+                ) : null}
+                <Text style={styles.lastMessageTime}>
+                  {item?.lastMessageTime}
+                </Text>
+              </View>
+            </TouchableOpacity>
           ))
-        )}
+        }
         keyExtractor={(item) => item?.club_id}
       />
     </View>
@@ -71,19 +80,22 @@ const GroupsListScreen = ({ chatGroups }) => {
         data={chatGroups}
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.groupItem} onPress={goToGroupss}>
-            <Image source={{ uri: item.user_photo }} style={styles.groupImage} />
+            <Image
+              source={{ uri: item.user_photo }}
+              style={styles.groupImage}
+            />
             <View style={styles.groupInfo}>
-              <Text style={styles.groupName}>
-                {item.conversation_name}
-              </Text>
+              <Text style={styles.groupName}>{item.conversation_name}</Text>
               <Text style={styles.groupMembers}>
                 {item?.participants?.length} members
               </Text>
             </View>
             <View style={styles.messageDetails}>
-              <View style={styles.messageCountContainer}>
-                <Text style={styles.messageCount}>{item?.unread_count}</Text>
-              </View>
+              {item?.unread_count ? (
+                <View style={styles.messageCountContainer}>
+                  <Text style={styles.messageCount}>{item?.unread_count}</Text>
+                </View>
+              ) : null}
               <Text style={styles.lastMessageTime}>
                 {item?.lastMessageTime}
               </Text>
