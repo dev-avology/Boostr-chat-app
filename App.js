@@ -1,7 +1,7 @@
 // App.js
 
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -23,6 +23,7 @@ const Stack = createNativeStackNavigator();
 
 const App = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,7 +33,7 @@ const App = () => {
         try {
           user_id = JSON.parse(storedUserId);
         } catch (parseError) {
-          console.error("Error parsing user_id:", parseError);
+          //console.error("Error parsing user_id:", parseError);
           user_id = null; // Set user_id to null if parsing fails
         }
 
@@ -41,7 +42,7 @@ const App = () => {
           dispatch(setCurrentUseData(user_id));
         }
       } catch (error) {
-        console.error("Error fetching user_id:", error);
+        //console.error("Error fetching user_id:", error);
       }
     };
 
