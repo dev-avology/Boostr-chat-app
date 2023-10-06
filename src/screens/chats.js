@@ -28,19 +28,20 @@ const UsersListScreen = ({
       <FlatList
         data={chatUsers}
         renderItem={({ item }) => (
-          <TouchableOpacity
+          item?.participants.map((participant) => (
+            <TouchableOpacity
             style={styles.userItem}
             onPress={() => handleUserClick(item)}
           >
             <View style={styles.statusContainer}>
-              <Image source={item?.profileImg} style={styles.userImage} />
+              <Image source={{ uri: participant?.user_photo }} style={styles.userImage} />
               {renderStatusIndicator(item?.status)}
             </View>
             <View style={styles.userInfo}>
               <Text style={styles.userName}>
-                {item?.first_name} {item?.last_name}
+                {participant?.first_name} {participant?.last_name}
               </Text>
-              <Text style={styles.lastMessage}>{item?.lastMessage}</Text>
+              <Text style={styles.lastMessage}>{participant?.lastMessage}</Text>
             </View>
             <View style={styles.messageDetails}>
               <View style={styles.messageCountContainer}>
@@ -51,8 +52,9 @@ const UsersListScreen = ({
               </Text>
             </View>
           </TouchableOpacity>
+          ))
         )}
-        keyExtractor={(item) => item?.id}
+        keyExtractor={(item) => item?.club_id}
       />
     </View>
   );
@@ -69,10 +71,10 @@ const GroupsListScreen = ({ chatGroups }) => {
         data={chatGroups}
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.groupItem} onPress={goToGroupss}>
-            <Image source={item.profileImg} style={styles.groupImage} />
+            <Image source={{ uri: item.user_photo }} style={styles.groupImage} />
             <View style={styles.groupInfo}>
               <Text style={styles.groupName}>
-                {item.first_name} {item.last_name}
+                {item.conversation_name}
               </Text>
               <Text style={styles.groupMembers}>
                 {item?.participants?.length} members
@@ -80,7 +82,7 @@ const GroupsListScreen = ({ chatGroups }) => {
             </View>
             <View style={styles.messageDetails}>
               <View style={styles.messageCountContainer}>
-                <Text style={styles.messageCount}>{item.unread_count}</Text>
+                <Text style={styles.messageCount}>{item?.unread_count}</Text>
               </View>
               <Text style={styles.lastMessageTime}>
                 {item?.lastMessageTime}
@@ -105,7 +107,6 @@ const ChatUserLists = ({ route, navigation }) => {
   const [chatGroups, setChatGroups] = useState([]);
   const [isShuffled, setIsShuffled] = useState(false);
   const [toggleState, setToggleState] = useState(true);
-
   const dispatch = useDispatch();
 
   useFocusEffect(
@@ -254,10 +255,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffffffb0",
   },
-  notFound:{
-    textAlign:'center',
-    fontSize:20,
-    padding:20,
+  notFound: {
+    textAlign: "center",
+    fontSize: 20,
+    padding: 20,
   },
   userItem: {
     flexDirection: "row",
