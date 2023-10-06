@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottomNavBar from '../navigation/BottomNavBar';
 import { checkUserData } from './authUtils';
-
+import { CHAT_API_URL } from '../config';
 const Stack = createNativeStackNavigator();
 
 const AllUserListScreen = () => {
@@ -16,7 +16,7 @@ const AllUserListScreen = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const user = await checkUserData('https://staging3.booostr.co/wp-json/chat-api/v1/chat_user_get_list_of_contacts');
+      const user = await checkUserData('${CHAT_API_URL}/chat_user_get_list_of_contacts');
       console.log('Fetched user data:', user);
       if (user) {
         setUserData(user);

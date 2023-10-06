@@ -19,7 +19,10 @@
       "channel": "preview",
       "android": {
         "buildType": "apk"
-      }
+      },
+      "ios": {
+        "buildConfiguration": "Debug"
+      },
     },
     "production": {
       "channel": "production",

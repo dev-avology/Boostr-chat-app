@@ -9,32 +9,33 @@ import {
   ActivityIndicator,
 } from "react-native";
 import bgImg from "../assets/chat-bg.png";
-import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons";
 import BottomNavBar from "../navigation/BottomNavBar";
 import { useDispatch, useSelector } from "react-redux";
-import { logout, getUserData } from "../actions/auth";
+import { logout } from "../actions/auth";
+import { fetchUserData } from "../reducers/loginReducer";
+import { memoizedSelectUserData } from '../selectors';
+
 const SettingsPage = ({ navigation }) => {
-  const CurrentUserID = useSelector((state) =>
-    JSON.parse(state.auth.CurrentUserID)
-  );
-  const auth = useSelector((state) => state.auth);
-  const isLoggedIn = useSelector((state) => JSON.parse(state.auth.isLoggedIn));
+  const CurrentUserID = useSelector((state) => JSON.parse(state.auth.userData)?.user_id);
+  const loading = useSelector((state) => state.auth.loading);
+  const userData = useSelector(memoizedSelectUserData);
   const dispatch = useDispatch();
-  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    const getUserData1 = async () => {
+    const fetchData = async () => {
       try {
-        const response = await dispatch(getUserData(CurrentUserID)); // Await the dispatch
-        // Update userData state with the response data
-        setUserData(JSON.parse(response.data));
+        if (CurrentUserID) {
+          dispatch(fetchUserData(CurrentUserID));
+        }
       } catch (error) {
+        console.error("Error fetching data:", error);
       }
     };
 
-    getUserData1();
-  }, [CurrentUserID]);
+    fetchData(); // Call the async function
+
+  }, [dispatch, navigation]);
 
   const handleChangePassword = () => {
     // Add logic for changing password here
@@ -72,7 +73,7 @@ const SettingsPage = ({ navigation }) => {
           </View>
         </View>
 
-        {userData ? (
+        {userData && !loading ? (
           <View style={styles.card}>
             <Image
               source={{ uri: userData?.user_photo }}
