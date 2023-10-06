@@ -8,7 +8,6 @@ const initialState = {
   error: false,
 };
 
-// Create the authSlice
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -36,7 +35,6 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(resetAllStates, (state) => {
-      // Reset the auth state to its initial values
       return { ...initialState };
     });
   },

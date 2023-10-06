@@ -23,7 +23,7 @@ const logIn = async (user) => {
           user_id: JSON.stringify(user_id),
         };
       } else {
-        console.error("API Error:" + response.data.error);
+        console.error("API Error:" + response.data);
         alert(response.data.error);
       }
     } else {
