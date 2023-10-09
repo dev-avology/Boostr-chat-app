@@ -57,9 +57,9 @@ const LoginScreen = ({ navigation }) => {
       .catch((error) => {});
   };
 
-  const handleForgotPassword = () => {
-    navigation.navigate("ForgotPassword");
-  };
+  //const handleForgotPassword = () => {
+ //   navigation.navigate("ForgotPassword");
+ // };
 
   const imgProps = Image.resolveAssetSource(bgImg).uri;
   const image = { uri: imgProps };
@@ -104,12 +104,12 @@ const LoginScreen = ({ navigation }) => {
                 <Text style={styles.buttonText}>Login</Text>
               </PaperButton>
             )}
-            <TouchableOpacity
+           {/* <TouchableOpacity
               onPress={handleForgotPassword}
               style={styles.forgotPasswordMain}
             >
               <Text style={styles.forgotPassword}>Forgot your password?</Text>
-            </TouchableOpacity>
+            </TouchableOpacity>*/}
           </View>
           <View style={styles.BottomText}>
             <Text style={[styles.smallText, styles.ForWidth]}>
