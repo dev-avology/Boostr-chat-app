@@ -22,46 +22,50 @@ const UsersListScreen = ({
   chatUsers,
   handleUserClick,
   renderStatusIndicator,
+  userID
 }) => {
   return (
     <View style={styles.container}>
       <FlatList
         data={chatUsers}
         renderItem={({ item }) =>
-          item?.participants.map((participant) => (
-            <TouchableOpacity
-              style={styles.userItem}
-              onPress={() => handleUserClick(item)}
-            >
-              <View style={styles.statusContainer}>
-                <Image
-                  source={{ uri: participant?.user_photo }}
-                  style={styles.userImage}
-                />
-                {renderStatusIndicator(item?.status)}
-              </View>
-              <View style={styles.userInfo}>
-                <Text style={styles.userName}>
-                  {participant?.first_name} {participant?.last_name}
-                </Text>
-                <Text style={styles.lastMessage}>
-                  {participant?.lastMessage}
-                </Text>
-              </View>
-              <View style={styles.messageDetails}>
-                {item?.unread_count ? (
-                  <View style={styles.messageCountContainer}>
-                    <Text style={styles.messageCount}>
-                      {item?.unread_count}
-                    </Text>
-                  </View>
-                ) : null}
-                <Text style={styles.lastMessageTime}>
-                  {item?.lastMessageTime}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          ))
+          item?.participants.map((participant, i) =>
+            participant?.user_id != userID ? (
+              <TouchableOpacity
+                style={styles.userItem}
+                onPress={() => handleUserClick(item, userID)}
+                key={i}
+              >
+                <View style={styles.statusContainer}>
+                  <Image
+                    source={{ uri: participant?.user_photo }}
+                    style={styles.userImage}
+                  />
+                  {renderStatusIndicator(item?.status)}
+                </View>
+                <View style={styles.userInfo}>
+                  <Text style={styles.userName}>
+                    {participant?.first_name} {participant?.last_name}{participant?.user_id}
+                  </Text>
+                  <Text style={styles.lastMessage}>
+                    {participant?.lastMessage}
+                  </Text>
+                </View>
+                <View style={styles.messageDetails}>
+                  {item?.unread_count ? (
+                    <View style={styles.messageCountContainer}>
+                      <Text style={styles.messageCount}>
+                        {item?.unread_count}
+                      </Text>
+                    </View>
+                  ) : null}
+                  <Text style={styles.lastMessageTime}>
+                    {item?.lastMessageTime}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ) : null
+          )
         }
         keyExtractor={(item) => item?.club_id}
       />
@@ -116,11 +120,10 @@ const ChatUserLists = ({ route, navigation }) => {
   const error = useSelector((state) => state.conversations.error);
 
   const [chatUsers, setChatUsers] = useState([]);
-  const [chatGroups, setChatGroups] = useState([]);
-  const [isShuffled, setIsShuffled] = useState(false);
   const [toggleState, setToggleState] = useState(true);
+  const [AsUser, setAsUser] = useState(userData?.user_id);
+  const [chatGroups, setChatGroups] = useState([]);
   const dispatch = useDispatch();
-
   useFocusEffect(
     React.useCallback(() => {
       const fetchData = async () => {
@@ -130,7 +133,6 @@ const ChatUserLists = ({ route, navigation }) => {
           } else {
             UserID = club?.post_id;
           }
-
           if (UserID) {
             dispatch(fetchConversationsList(UserID, club?.post_id));
           }
@@ -170,29 +172,14 @@ const ChatUserLists = ({ route, navigation }) => {
     />
   );
 
-  const handleUserClick = (user) => {
-    navigation.navigate("ChatDashboard", { user });
-  };
-
-  const shuffleChatUsers = () => {
-    const shuffledUsers = [...chatUsers];
-    for (let i = shuffledUsers.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffledUsers[i], shuffledUsers[j]] = [
-        shuffledUsers[j],
-        shuffledUsers[i],
-      ];
-    }
-    setChatUsers(shuffledUsers);
-    setIsShuffled(true);
+  const handleUserClick = (conversation, asUser) => {
+    navigation.navigate("ChatDashboard", { conversation, asUser });
   };
 
   const toggleShuffle = () => {
+    const newUserId = toggleState ? club?.post_id : userData?.user_id;
+    setAsUser(newUserId);
     setToggleState(!toggleState);
-    setIsShuffled(false);
-    if (!toggleState) {
-      shuffleChatUsers();
-    }
   };
 
   const renderToggleText = () => {
@@ -219,7 +206,7 @@ const ChatUserLists = ({ route, navigation }) => {
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.toggleButton} onPress={toggleShuffle}>
             <FontAwesome
-              name={isShuffled ? "toggle-on" : "toggle-off"}
+              name={!toggleState ? "toggle-on" : "toggle-off"}
               size={32}
               color="#000"
             />
@@ -240,6 +227,7 @@ const ChatUserLists = ({ route, navigation }) => {
                   chatUsers={chatUsers}
                   handleUserClick={handleUserClick}
                   renderStatusIndicator={renderStatusIndicator}
+                  userID={AsUser}
                 />
               ) : (
                 <Text style={styles.notFound}>No direct chats found.</Text>

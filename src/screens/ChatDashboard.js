@@ -16,13 +16,16 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import bgImg from '../assets/chat-bg.png';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
+import { useSelector } from 'react-redux';
+import { memoizedSelectUserData } from '../selectors';
 
 const ChatDashboard = ({ route }) => {
   const [messages, setMessages] = useState([]);
   const [messageText, setMessageText] = useState('');
   const flatlistRef = useRef(null);
   const navigation = useNavigation(); // Initialize navigation
-
+  
+const userData = useSelector(memoizedSelectUserData);
   useEffect(() => {
     // Simulate initial messages
     const initialMessages = [
@@ -42,7 +45,9 @@ const ChatDashboard = ({ route }) => {
     return () => backHandler.remove();
   }, []);
 
-  const user = route.params.user;
+  const conversation = route.params.conversation;
+  const asUser = route.params.asUser;
+  const user = conversation.participants.find(participant => participant.user_id !== userData?.user_id);
 
   const sendMessage = () => {
     if (messageText.trim() === '') {
@@ -76,10 +81,10 @@ const ChatDashboard = ({ route }) => {
           </TouchableOpacity>
           <TouchableOpacity onPress={goToUserProfile}>
             <View style={styles.userInfo}>
-              <Image source={user.profileImg} style={styles.userImage} />
+              <Image source={{ uri: user?.user_photo }} style={styles.userImage} />
               <View>
-                <Text style={styles.userName}>{user.name}</Text>
-                <Text style={styles.userStatus}>{user.status}</Text>
+                <Text style={styles.userName}>{user?.first_name} {user?.last_name}</Text>
+                <Text style={styles.userStatus}>{user?.status}</Text>
               </View>
             </View>
           </TouchableOpacity>
