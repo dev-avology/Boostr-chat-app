@@ -15,18 +15,13 @@
       "channel": "development"
     },
     "preview": {
-      "env": {
-        "EXPO_PUBLIC_API_URL": "https://staging3.booostr.co/wp-json/chat-api/v1"
-      },
       "distribution": "internal",
       "channel": "preview",
       "android": {
         "buildType": "apk"
       },
       "ios": {
-        "distribution": "internal",
-        "buildConfiguration": "Release",
-        "simulator": true
+        "buildConfiguration": "Debug"
       }
     },
     "production": {

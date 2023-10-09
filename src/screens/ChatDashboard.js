@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -11,103 +11,187 @@ import {
   Image,
   BackHandler,
   ImageBackground,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import bgImg from '../assets/chat-bg.png';
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
-import { useSelector } from 'react-redux';
-import { memoizedSelectUserData } from '../selectors';
+  ActivityIndicator
+} from "react-native";
+import Icon from "react-native-vector-icons/Ionicons";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import bgImg from "../assets/chat-bg.png";
+import { useNavigation } from "@react-navigation/native"; // Import useNavigation hook
+import { useDispatch, useSelector } from "react-redux";
+import { memoizedSelectUserData, memoizeduserMessages } from "../selectors";
+import { fetchUserMessages, autofetchUserMessages } from "../reducers/chatMessagesSlice";
 
-const ChatDashboard = ({ route }) => {
-  const [messages, setMessages] = useState([]);
-  const [messageText, setMessageText] = useState('');
+const YOUR_REFRESH_INTERVAL = 5000;
+
+const ChatDashboard = ({ route, navigation }) => {
+  const [messages1, setMessages] = useState([]);
+  const [messageText, setMessageText] = useState("");
   const flatlistRef = useRef(null);
-  const navigation = useNavigation(); // Initialize navigation
-  
-const userData = useSelector(memoizedSelectUserData);
+  const dispatch = useDispatch();
+  const userData = useSelector(memoizedSelectUserData);
+  const messages = useSelector(memoizeduserMessages);
+  const loading = useSelector((state) => state.userMessages.loading);
+
+  const conversation = route.params.conversation;
+  const asUser = route.params.asUser;
+  const user = conversation.participants.find(
+    (participant) => participant.user_id !== userData?.user_id
+  );
+
   useEffect(() => {
-    // Simulate initial messages
-    const initialMessages = [
-      // Initial chat messages...
-    ];
+    const fetchData = async () => {
+      try {
+        if (asUser) {
+          dispatch(fetchUserMessages(conversation?.id, asUser));
+        }
+      } catch (error) {
+        //console.error("Error fetching data:", error);
+      } finally{
+      }
+    };
+    const autofetchData = async () => {
+      try {
+        if (asUser) {
+          dispatch(autofetchUserMessages(conversation?.id, asUser));
+          
+        }
+      } catch (error) {
+        //console.error("Error fetching data:", error);
+      } finally{
+      }
+    };
 
-    setMessages(initialMessages);
 
-    // Add a back button listener
+    fetchData();
+
+     const refreshInterval = setInterval(() => {
+      autofetchData();
+    }, YOUR_REFRESH_INTERVAL);
+
+    return () => {
+      clearInterval(refreshInterval);
+    };
+
+  }, [dispatch, navigation, asUser, conversation]);
+  useEffect(() => {
+
     const backAction = () => {
       navigation.goBack();
       return true;
     };
 
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
 
     return () => backHandler.remove();
   }, []);
 
-  const conversation = route.params.conversation;
-  const asUser = route.params.asUser;
-  const user = conversation.participants.find(participant => participant.user_id !== userData?.user_id);
-
   const sendMessage = () => {
-    if (messageText.trim() === '') {
+    if (messageText.trim() === "") {
       return;
     }
 
     const newMessage = {
       id: String(messages.length + 1),
-      text: messageText,
-      sender: 'user1',
+      content: messageText,
+      sender_id: asUser,
     };
 
     setMessages([...messages, newMessage]);
-    setMessageText('');
-
-    // Scroll to the bottom when a new message is sent
+    setMessageText("");
     flatlistRef.current.scrollToEnd();
   };
 
-  // Function to navigate to the user profile page
   const goToUserProfile = () => {
-    navigation.navigate('UserProfile', { user }); // Replace 'UserProfile' with your actual profile screen name
+    navigation.navigate("UserProfile", { asUser });
   };
 
   return (
     <ImageBackground style={styles.img_top} source={bgImg} resizeMode="cover">
-      <KeyboardAvoidingView style={styles.container} behavior="padding" keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior="padding"
+        keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+      >
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Icon name="arrow-back" size={24} color="#000" style={styles.backIcon} />
+            <Icon
+              name="arrow-back"
+              size={24}
+              color="#000"
+              style={styles.backIcon}
+            />
           </TouchableOpacity>
           <TouchableOpacity onPress={goToUserProfile}>
             <View style={styles.userInfo}>
-              <Image source={{ uri: user?.user_photo }} style={styles.userImage} />
+              <Image
+                source={{ uri: user?.user_photo }}
+                style={styles.userImage}
+              />
               <View>
-                <Text style={styles.userName}>{user?.first_name} {user?.last_name}</Text>
+                <Text style={styles.userName}>
+                  {conversation?.conversation_type == 'group' ? conversation?.conversation_name : user?.first_name + '' + user?.last_name}
+                </Text>
                 <Text style={styles.userStatus}>{user?.status}</Text>
               </View>
             </View>
           </TouchableOpacity>
         </View>
         <View style={styles.messageContainer}>
-          <FlatList
+          {loading ? 
+            <View style={styles.containerLoader}>
+              <ActivityIndicator size="large" color="#000" />
+            </View> : <FlatList
             ref={flatlistRef}
             data={messages}
             keyExtractor={(item) => item.id}
+            onContentSizeChange={() => {
+              flatlistRef.current.scrollToEnd({ animated: true });
+            }}
+            onLayout={() => {
+              flatlistRef.current.scrollToEnd({ animated: true });
+            }}
             renderItem={({ item }) => (
               <View
-                style={[
-                  styles.message,
-                  {
-                    alignSelf: item.sender === 'user1' ? 'flex-end' : 'flex-start',
-                    backgroundColor: item.sender === 'user1' ? '#00c0ff' : '#efefef',
-                  },
-                ]}
+                style={{
+                  alignSelf:
+                    item.sender_id == asUser ? "flex-end" : "flex-start",
+                }}
               >
-                <Text style={styles.messageText}>{item.text}</Text>
+                <View
+                  style={[
+                    styles.message,
+                    {
+                      alignSelf:
+                        item.sender_id == asUser ? "flex-end" : "flex-start",
+                      backgroundColor:
+                        item.sender_id == asUser ? "#00c0ff" : "#fff",
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.messageText,
+                      {
+                        color: item.sender_id == asUser ? "#fff" : "#333",
+                      },
+                    ]}
+                  >
+                    {item.content}
+                  </Text>
+                </View>
+                {item.sender_id != asUser ? (
+                  <Image
+                    source={{ uri: item?.user_photo }}
+                    style={styles.userProfileImage}
+                  />
+                ) : null}
               </View>
             )}
           />
+          }
         </View>
         <View style={styles.inputContainer}>
           <TouchableOpacity style={styles.iconButton}>
@@ -136,16 +220,20 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   img_top: {
-    height: '100%',
+    height: "100%",
+  },
+  containerLoader:{
+    flex:1,
+    alignItems: "center",
+    justifyContent:"center"
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#efefef',
-    backgroundColor:'#fff',
-    
+    borderBottomColor: "#efefef",
+    backgroundColor: "#fff",
   },
   backIcon: {
     width: 24,
@@ -155,21 +243,29 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    borderColor: '#efefef',
+    borderColor: "#efefef",
     borderWidth: 1,
     marginHorizontal: 10,
   },
+  userProfileImage: {
+    width: 20,
+    height: 20,
+    borderRadius: 25,
+    borderColor: "#efefef",
+    borderWidth: 1,
+    marginHorizontal: 12,
+  },
   userInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   userName: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   userStatus: {
     fontSize: 14,
-    color: '#777',
+    color: "#777",
   },
   messageContainer: {
     flex: 1,
@@ -178,22 +274,22 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     marginHorizontal: 16,
     padding: 12,
-    borderRadius: 10,
-    maxWidth: '70%',
+    borderRadius: 6,
+    maxWidth: "70%",
   },
   messageText: {
     fontSize: 16,
-    color: '#fff',
+    color: "#fff",
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 16,
-    backgroundColor:'#fff',
+    backgroundColor: "#fff",
   },
   input: {
     flex: 1,
-    borderColor: '#efefef',
+    borderColor: "#efefef",
     borderWidth: 1,
     borderRadius: 30,
     paddingHorizontal: 16,
@@ -201,22 +297,22 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   sendButton: {
-    backgroundColor: '#00c0ff',
+    backgroundColor: "#00c0ff",
     borderRadius: 30,
     paddingVertical: 12,
     paddingHorizontal: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   sendButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   iconButton: {
     paddingHorizontal: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

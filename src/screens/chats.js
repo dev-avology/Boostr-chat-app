@@ -45,7 +45,7 @@ const UsersListScreen = ({
                 </View>
                 <View style={styles.userInfo}>
                   <Text style={styles.userName}>
-                    {participant?.first_name} {participant?.last_name}{participant?.user_id}
+                    {participant?.first_name} {participant?.last_name}
                   </Text>
                   <Text style={styles.lastMessage}>
                     {participant?.lastMessage}
@@ -73,7 +73,7 @@ const UsersListScreen = ({
   );
 };
 
-const GroupsListScreen = ({ chatGroups }) => {
+const GroupsListScreen = ({ chatGroups, handleUserClick, userID }) => {
   const navigation = useNavigation();
   const goToGroupss = () => {
     navigation.navigate("GroupChatDashboard");
@@ -83,7 +83,7 @@ const GroupsListScreen = ({ chatGroups }) => {
       <FlatList
         data={chatGroups}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.groupItem} onPress={goToGroupss}>
+          <TouchableOpacity style={styles.groupItem} onPress={() => handleUserClick(item, userID)}>
             <Image
               source={{ uri: item.user_photo }}
               style={styles.groupImage}
@@ -237,7 +237,7 @@ const ChatUserLists = ({ route, navigation }) => {
           <Tab.Screen name="Group Chat">
             {() =>
               chatGroups?.length > 0 ? (
-                <GroupsListScreen chatGroups={chatGroups} />
+                <GroupsListScreen chatGroups={chatGroups} handleUserClick={handleUserClick} userID={AsUser}/>
               ) : (
                 <Text style={styles.notFound}>No group chats found.</Text>
               )
