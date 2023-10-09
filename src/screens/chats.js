@@ -16,6 +16,7 @@ import { memoizedSelectUserData, memoizedConversations } from "../selectors";
 import { useSelector, useDispatch } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 import { fetchConversationsList } from "../reducers/conversationSlice";
+import GroupImg from '../assets/group_icons.png'
 const Tab = createMaterialTopTabNavigator();
 
 const UsersListScreen = ({
@@ -85,7 +86,7 @@ const GroupsListScreen = ({ chatGroups, handleUserClick, userID }) => {
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.groupItem} onPress={() => handleUserClick(item, userID)}>
             <Image
-              source={{ uri: item.user_photo }}
+              source={GroupImg}
               style={styles.groupImage}
             />
             <View style={styles.groupInfo}>
