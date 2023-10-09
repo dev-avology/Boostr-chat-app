@@ -37,6 +37,7 @@ const authSlice = createSlice({
     },
     CurrentUserSuccess: (state, action) => {
       state.userData = action.payload;
+      state.isLoggedIn = true;
       state.loading = false;
     },
     CurrentUserError: (state) => {
@@ -62,6 +63,10 @@ export const { loginRequest, loginSuccess, loginError, CurrentUserRequest, Curre
 
 export const fetchUserData = (userId) => async (dispatch) => {
   try {
+    const storedUserId = await AsyncStorage.getItem("user_id");
+    if(storedUserId){
+      userId = storedUserId;
+    }
     dispatch(CurrentUserRequest());
     const response = await axios.get(`${CHAT_API_URL}/chat_get_user_info?user_id=${userId}`);
     dispatch(CurrentUserSuccess(JSON.stringify(response.data)));

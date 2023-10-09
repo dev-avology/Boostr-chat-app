@@ -29,6 +29,7 @@ const App = () => {
     const fetchData = async () => {
       try {
         const storedUserId = await AsyncStorage.getItem("user_id");
+        console.log(storedUserId);
         let user_id;
         try {
           user_id = JSON.parse(storedUserId);
