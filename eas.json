@@ -15,6 +15,9 @@
       "channel": "development"
     },
     "preview": {
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://staging3.booostr.co/wp-json/chat-api/v1"
+      },
       "distribution": "internal",
       "channel": "preview",
       "android": {
@@ -22,7 +25,8 @@
       },
       "ios": {
         "distribution": "internal",
-        "withoutCredentials": true
+        "buildConfiguration": "Release",
+        "simulator": true
       }
     },
     "production": {
