@@ -22,6 +22,11 @@ const chatMessagesSlice = createSlice({
       state.error = action.payload;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(resetAllStates, (state) => {
+      return { ...initialState };
+    });
+  },
 });
 
 export const {

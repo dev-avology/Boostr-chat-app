@@ -1,66 +1,35 @@
 import { createSelector } from "reselect";
 
-const selectUserData = (state) => state.auth.userData;
-const SelectclubList = (state) => state.clubList.clubs;
-const SelectConversations = (state) => state.conversations.conversations;
-const SelectuserMessages = (state) => state.userMessages.messages;
+const selectJsonData = (state) => {
+  try {
+    return JSON.parse(state);
+  } catch (error) {
+    // Handle JSON parsing error if necessary
+    return null;
+  }
+};
+
+const selectUserData = (state) => selectJsonData(state.auth.userData) || [];
+const SelectclubList = (state) => selectJsonData(state.clubList.clubs) || [];
+const SelectConversations = (state) => selectJsonData(state.conversations.conversations) || [];
+const SelectuserMessages = (state) => selectJsonData(state.userMessages.messages)?.data?.messages || [];
 
 export const memoizedSelectUserData = createSelector(
   [selectUserData],
-  (userData) => {
-    try {
-      if (userData) {
-        const parseduserData = JSON.parse(userData);
-        return parseduserData;
-      }
-    } catch (error) {
-      //console.error("JSON parsing error:", error);
-    }
-    return [];
-  }
+  (userData) => userData
 );
 
 export const memoizedSelectclubList = createSelector(
   [SelectclubList],
-  (clubs) => {
-    try {
-      if (clubs) {
-        const parsedClubs = JSON.parse(clubs);
-        return parsedClubs;
-      }
-    } catch (error) {
-      //console.error("JSON parsing error:", error);
-    }
-    return [];
-  }
+  (clubs) => clubs
 );
 
 export const memoizedConversations = createSelector(
   [SelectConversations],
-  (conversations) => {
-    try {
-      if (conversations) {
-        const parsedConversations = JSON.parse(conversations);
-        return parsedConversations;
-      }
-    } catch (error) {
-      //console.error("JSON parsing error:", error);
-    }
-    return [];
-  }
+  (conversations) => conversations
 );
 
 export const memoizeduserMessages = createSelector(
   [SelectuserMessages],
-  (userMessages) => {
-    try {
-      if (userMessages) {
-        const parseduserMessages = JSON.parse(userMessages);
-        return parseduserMessages?.data?.messages;
-      }
-    } catch (error) {
-      //console.error("JSON parsing error:", error);
-    }
-    return [];
-  }
+  (userMessages) => userMessages
 );
