@@ -112,6 +112,7 @@ const LoginScreen = ({ navigation }) => {
             </TouchableOpacity>*/}
           </View>
           <View style={styles.BottomText}>
+            
             <Text style={[styles.smallText, styles.ForWidth]}>
               To access Booostr Team Chat for your organization, you need to
               have a Booostr user account. If you do not have a Booostr user
