@@ -21,8 +21,9 @@
         "buildType": "apk"
       },
       "ios": {
-        "buildConfiguration": "Debug"
-      },
+        "distribution": "internal",
+        "withoutCredentials": true
+      }
     },
     "production": {
       "channel": "production",
