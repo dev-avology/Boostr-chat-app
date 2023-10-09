@@ -18,37 +18,41 @@ import AllUserList from "./src/screens/AllUsers";
 import AllGroupsscreen from "./src/screens/AllGroups";
 import GroupProfile from "./src/screens/GroupProfile";
 import GroupChatDashboard from "./src/screens/GroupChatDashboard";
-
+import { fetchUserData } from "./src/reducers/loginReducer";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ActivityIndicator } from "react-native-paper";
+import { View } from 'react-native';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const loading = useSelector((state) => state.auth.loading);
   const dispatch = useDispatch();
-
   useEffect(() => {
     const fetchData = async () => {
+      const storedUserId = await AsyncStorage.getItem("user_id");
       try {
-        const storedUserId = await AsyncStorage.getItem("user_id");
-        let user_id;
-        try {
-          user_id = JSON.parse(storedUserId);
-        } catch (parseError) {
-          //console.error("Error parsing user_id:", parseError);
-          user_id = null; // Set user_id to null if parsing fails
-        }
-
-        if (user_id !== null) {
-          // Dispatch an action to set the current user ID
-          dispatch(setCurrentUseData(user_id));
+        if (storedUserId) {
+          dispatch(fetchUserData(storedUserId));
         }
       } catch (error) {
-        //console.error("Error fetching user_id:", error);
+        //console.error("Error fetching data:", error);
       }
     };
 
-    fetchData();
-  }, [dispatch]);
+    fetchData(); // Call the async function
 
+  }, [dispatch]);
+  if(loading && !isLoggedIn)
+  return (
+    <View style={{
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+    }}>
+      <ActivityIndicator size="large" color="#000" />
+    </View>
+  );
   return (
     <SafeAreaProvider style={{ flex: 1 }}>
       <NavigationContainer>
