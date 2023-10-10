@@ -24,6 +24,11 @@
         "buildConfiguration": "Debug"
       }
     },
+    "simulator": {
+      "ios":{
+        "simulator": true
+      }
+    },
     "production": {
       "channel": "production",
       "android": {
