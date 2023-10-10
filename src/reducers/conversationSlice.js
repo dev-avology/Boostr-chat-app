@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { resetAllStates } from "./resetSlice";
 import axios from 'axios';
 import { CHAT_API_URL } from '../config';
 const conversationSlice = createSlice({

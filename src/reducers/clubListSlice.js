@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { resetAllStates } from "./resetSlice";
 import { CHAT_API_URL } from '../config';
 const clubSlice = createSlice({
   name: 'clubs',
