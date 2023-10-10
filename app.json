@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Booster Chat",
-    "slug": "booostr-chat",
+    "slug": "booter-chat-app",
     "platforms": [ "ios", "android" ],
     "version": "1.0.0",
     "orientation": "portrait",
@@ -16,13 +16,12 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "9487759b-6073-44e0-aeb3-e2f2cbb732c8"
+        "projectId": "56346ead-76b1-4414-9cdb-a91df99ffc31"
       }
     },
-    "owner": "devavology",
+    "owner": "anoopavology",
     "runtimeVersion": "1.0.0",
     "updates": {
-      "url": "https://u.expo.dev/9487759b-6073-44e0-aeb3-e2f2cbb732c8",
       "fallbackToCacheTimeout": 0
     },
     "android": {
