@@ -26,7 +26,8 @@
     },
     "simulator": {
       "ios":{
-        "simulator": true
+        "simulator": true,
+        "image": "latest"
       }
     },
     "production": {
