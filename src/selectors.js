@@ -12,7 +12,7 @@ const selectJsonData = (state) => {
 const selectUserData = (state) => selectJsonData(state.auth.userData) || [];
 const SelectclubList = (state) => selectJsonData(state.clubList.clubs) || [];
 const SelectConversations = (state) => selectJsonData(state.conversations.conversations) || [];
-const SelectuserMessages = (state) => selectJsonData(state.userMessages.messages)?.data?.messages || [];
+const SelectuserMessages = (state) => state.userMessages.messages || [];
 
 export const memoizedSelectUserData = createSelector(
   [selectUserData],

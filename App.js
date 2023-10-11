@@ -21,7 +21,7 @@ import GroupChatDashboard from "./src/screens/GroupChatDashboard";
 import { fetchUserData } from "./src/reducers/loginReducer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ActivityIndicator } from "react-native-paper";
-import { View } from 'react-native';
+import { View, StyleSheet, StatusBar } from 'react-native';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -55,35 +55,46 @@ const App = () => {
   );
   return (
     <SafeAreaProvider style={{ flex: 1 }}>
-      <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName={isLoggedIn ? "ClubList" : "Login"}
-          screenOptions={{ headerShown: false }}
-        >
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="ClubList" component={ClubList} />
-          <Stack.Screen name="ChatUserLists" component={ChatUserLists} />
-          <Stack.Screen name="ChatDashboard" component={ChatDashboard} />
-          <Stack.Screen name="UserProfile" component={UserProfile} />
-          <Stack.Screen name="SelectProfile" component={SelectProfileScreen} />
-          <Stack.Screen name="SettingsPage" component={SettingsPage} />
-          <Stack.Screen name="AllUserList" component={AllUserList} />
-          <Stack.Screen name="AllGroups" component={AllGroupsscreen} />
-          <Stack.Screen name="GroupProfile" component={GroupProfile} />
-          <Stack.Screen
-            name="GroupChatDashboard"
-            component={GroupChatDashboard}
-          />
+      <View style={styles.container}>
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName={isLoggedIn ? "ClubList" : "Login"}
+            screenOptions={{ headerShown: false }}
+          >
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="ClubList" component={ClubList} />
+            <Stack.Screen name="ChatUserLists" component={ChatUserLists} />
+            <Stack.Screen name="ChatDashboard" component={ChatDashboard} />
+            <Stack.Screen name="UserProfile" component={UserProfile} />
+            <Stack.Screen name="SelectProfile" component={SelectProfileScreen} />
+            <Stack.Screen name="SettingsPage" component={SettingsPage} />
+            <Stack.Screen name="AllUserList" component={AllUserList} />
+            <Stack.Screen name="AllGroups" component={AllGroupsscreen} />
+            <Stack.Screen name="GroupProfile" component={GroupProfile} />
+            <Stack.Screen
+              name="GroupChatDashboard"
+              component={GroupChatDashboard}
+            />
 
-          <Stack.Screen name="SignUp" component={SignUpScreen} />
-          <Stack.Screen
-            name="ForgotPassword"
-            component={ForgotPasswordScreen}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+            <Stack.Screen name="SignUp" component={SignUpScreen} />
+            <Stack.Screen
+              name="ForgotPassword"
+              component={ForgotPasswordScreen}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </View>
     </SafeAreaProvider>
   );
 };
 
 export default App;
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: Platform.OS === "ios" ? 20 : 10,
+    paddingBottom: Platform.OS === "ios" ? 15 : 5
+  }
+});

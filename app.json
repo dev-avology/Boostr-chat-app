@@ -36,6 +36,15 @@
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to let user put a photo in his profile page."
       }
-  }
+  },
+  "plugins": [
+    [
+      "expo-image-picker",
+      {
+        "photosPermission": "Allow $(PRODUCT_NAME) to access your photos",
+        "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera"
+      }
+    ]
+  ]
   }
 }

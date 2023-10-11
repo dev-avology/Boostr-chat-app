@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   FlatList,
   ActivityIndicator,
+  ImageBackground
 } from "react-native";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -17,6 +18,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 import { fetchConversationsList } from "../reducers/conversationSlice";
 import GroupImg from '../assets/group_icons.png'
+
 const Tab = createMaterialTopTabNavigator();
 
 const UsersListScreen = ({
@@ -42,15 +44,14 @@ const UsersListScreen = ({
                     source={{ uri: participant?.user_photo }}
                     style={styles.userImage}
                   />
-                  {renderStatusIndicator(item?.status)}
+                  {renderStatusIndicator(participant?.status)}
                 </View>
                 <View style={styles.userInfo}>
                   <Text style={styles.userName}>
                     {participant?.first_name} {participant?.last_name}
                   </Text>
-                  <Text style={styles.lastMessage}>
-                    {participant?.lastMessage}
-                  </Text>
+                  {participant?.lastMessage ? <Text style={styles.lastMessage}>{participant?.lastMessage}
+                  </Text> : null}
                 </View>
                 <View style={styles.messageDetails}>
                   {item?.unread_count ? (
@@ -125,6 +126,7 @@ const ChatUserLists = ({ route, navigation }) => {
   const [AsUser, setAsUser] = useState(userData?.user_id);
   const [chatGroups, setChatGroups] = useState([]);
   const dispatch = useDispatch();
+
   useFocusEffect(
     React.useCallback(() => {
       const fetchData = async () => {
@@ -153,7 +155,7 @@ const ChatUserLists = ({ route, navigation }) => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "active":
+      case "online":
         return "#0F0";
       case "offline":
         return "#F00";
@@ -216,35 +218,38 @@ const ChatUserLists = ({ route, navigation }) => {
         </View>
       </View>
       {loading ? (
-        <View style={styles.containerLoader}>
-          <ActivityIndicator size="large" color="#000" />
-        </View>
+          <View style={styles.containerLoader}>
+            <ActivityIndicator size="large" color="#000" />
+          </View>
       ) : (
-        <Tab.Navigator>
-          <Tab.Screen name="Direct Chat">
-            {() =>
-              chatUsers?.length > 0 ? (
-                <UsersListScreen
-                  chatUsers={chatUsers}
-                  handleUserClick={handleUserClick}
-                  renderStatusIndicator={renderStatusIndicator}
-                  userID={AsUser}
-                />
-              ) : (
-                <Text style={styles.notFound}>No direct chats found.</Text>
-              )
-            }
-          </Tab.Screen>
-          <Tab.Screen name="Group Chat">
-            {() =>
-              chatGroups?.length > 0 ? (
-                <GroupsListScreen chatGroups={chatGroups} handleUserClick={handleUserClick} userID={AsUser}/>
-              ) : (
-                <Text style={styles.notFound}>No group chats found.</Text>
-              )
-            }
-          </Tab.Screen>
-        </Tab.Navigator>
+          <Tab.Navigator screenOptions={{
+            tabBarLabelStyle: { fontSize: 15, fontWeight:600},
+            tabBarStyle: {}
+          }} >
+            <Tab.Screen name="Direct Chat" options={{ title: 'Direct Chat' }}>
+                {() =>
+                  chatUsers?.length > 0 ? (
+                    <UsersListScreen
+                      chatUsers={chatUsers}
+                      handleUserClick={handleUserClick}
+                      renderStatusIndicator={renderStatusIndicator}
+                      userID={AsUser}
+                    />
+                  ) : (
+                    <Text style={styles.notFound}>No direct chats found.</Text>
+                  )
+                }
+            </Tab.Screen>
+            <Tab.Screen name="Group Chat" options={{ title: 'Groups Chat' }}>
+              {() =>
+                chatGroups?.length > 0 ? (
+                  <GroupsListScreen chatGroups={chatGroups} handleUserClick={handleUserClick} userID={AsUser}/>
+                ) : (
+                  <Text style={styles.notFound}>No group chats found.</Text>
+                )
+              }
+            </Tab.Screen>
+          </Tab.Navigator>
       )}
       <BottomNavBar />
     </>
@@ -254,37 +259,47 @@ const ChatUserLists = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffffb0",
+    backgroundColor:"#fff"
   },
   notFound: {
     textAlign: "center",
     fontSize: 20,
     padding: 20,
+    backgroundColor:"#fff",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   userItem: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 16,
+    justifyContent: "center", 
+    paddingHorizontal:15,
+    paddingVertical:10,
     borderBottomWidth: 1,
     borderBottomColor: "#efefef",
+  },
+  img_top: {
+    height: "100%",
   },
   groupItem: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 16,
+    paddingHorizontal:15,
+    paddingVertical:10,
     borderBottomWidth: 1,
     borderBottomColor: "#efefef",
   },
   userImage: {
-    width: 50,
-    height: 50,
+    width: 45,
+    height: 45,
     borderRadius: 25,
     borderColor: "#efefef",
     borderWidth: 1,
   },
   groupImage: {
-    width: 50,
-    height: 50,
+    width: 45,
+    height: 45,
     borderRadius: 25,
     borderColor: "#efefef",
     borderWidth: 1,
@@ -298,12 +313,12 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
   userName: {
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 17,
+    fontWeight:"600"
   },
   groupName: {
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 17,
+    fontWeight:"600"
   },
   lastMessage: {
     color: "#777",
@@ -323,8 +338,8 @@ const styles = StyleSheet.create({
     right: 0,
   },
   statusContainer: {
-    marginRight: 8,
-    marginBottom: 8,
+    marginRight: 0,
+    marginBottom: 0,
   },
   messageCountContainer: {
     backgroundColor: "#00c0ff",
@@ -337,7 +352,7 @@ const styles = StyleSheet.create({
   messageCount: {
     color: "#fff",
     fontSize: 14,
-    fontWeight: "bold",
+    fontWeight: "500",
   },
   timingText: {
     color: "#777",
@@ -347,12 +362,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 16,
-    paddingTop: 25,
-    paddingBottom: 25,
+    paddingHorizontal: 15,
+    paddingTop: 35,
+    paddingBottom: 15,
     borderBottomWidth: 1,
     borderBottomColor: "#efefef",
-    backgroundColor: "#fff",
+    backgroundColor: "#f7f7f7",
   },
   headerLeft: {
     flex: 1,
@@ -363,8 +378,8 @@ const styles = StyleSheet.create({
   },
   headerText: {
     color: "#000",
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 16,
+    fontWeight: "700",
   },
   iconButton: {
     marginLeft: 10,
@@ -379,12 +394,13 @@ const styles = StyleSheet.create({
   toggleText: {
     marginHorizontal: 10,
     fontSize: 15,
-    fontWeight: "800",
+    fontWeight: "700",
   },
   containerLoader: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#fff",
   },
 });
 

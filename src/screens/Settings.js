@@ -22,6 +22,28 @@ const SettingsPage = ({ navigation }) => {
   const userData = useSelector(memoizedSelectUserData);
   const dispatch = useDispatch();
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "online":
+        return "#0F0";
+      case "offline":
+        return "#F00";
+      case "away":
+        return "gray";
+      default:
+        return "#777";
+    }
+  };
+
+  const renderStatusIndicator = (status) => (
+    <View
+      style={[
+        styles.statusIndicator,
+        { backgroundColor: getStatusColor(status) },
+      ]}
+    />
+  );
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -75,14 +97,18 @@ const SettingsPage = ({ navigation }) => {
 
         {userData && !loading ? (
           <View style={styles.card}>
-            <Image
-              source={{ uri: userData?.user_photo }}
-              style={styles.userImage}
-            />
+            <View style={styles.statusContainer}>
+              <Image
+                source={{ uri: userData?.user_photo }}
+                style={styles.userImage}
+              />
+              {renderStatusIndicator(userData?.status)}
+            </View>
             <Text style={styles.userName}>
               {userData?.first_name} {userData?.last_name}
             </Text>
             <Text style={styles.userStatus}>{userData.user_email}</Text>
+            
             <View style={styles.mainBox}>
               <TouchableOpacity
                 style={styles.optionButton}
@@ -113,6 +139,18 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+  statusIndicator: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+  },
+  statusContainer: {
+    marginRight: 8,
+    marginBottom: 8,
   },
   mainBox: {
     backgroundColor: "#f4f4f4",

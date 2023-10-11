@@ -16,11 +16,17 @@ const chatMessagesSlice = createSlice({
     },
     fetchUserMessagesSuccess: (state, action) => {
       state.loading = false;
-      state.messages = action.payload;
+      const parsedPayload = JSON.parse(action.payload);
+      if (parsedPayload?.data?.messages) {
+        state.messages = parsedPayload.data.messages;
+      }
     },
     fetchUserMessagesFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
+    },
+    addMessage: (state, action) => {
+        state.messages.push(action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -34,6 +40,7 @@ export const {
   fetchUserMessagesStart,
   fetchUserMessagesSuccess,
   fetchUserMessagesFailure,
+  addMessage
 } = chatMessagesSlice.actions;
 
 export const fetchUserMessages =
@@ -73,5 +80,14 @@ export const autofetchUserMessages =
       dispatch(fetchUserMessagesFailure(error));
     }
   };
+
+export const sendMessage = (payload) => async () => {
+  try {
+    const response = await axios.post(`${CHAT_API_URL}/chat_send_text_message`, payload);
+    return response.data;
+  } catch (error) {
+    return error.response.data;
+  }
+};
 
 export default chatMessagesSlice.reducer;

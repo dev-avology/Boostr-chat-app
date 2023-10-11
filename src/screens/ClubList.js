@@ -135,7 +135,7 @@ const ClubList = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffffb0",
+    backgroundColor: "#fff",
   },
   clubListContainer: {
     flex: 1,
@@ -143,12 +143,13 @@ const styles = StyleSheet.create({
   clubItem: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 16,
+    padding: 8,
     borderBottomWidth: 1,
     borderBottomColor: "#efefef",
   },
   wrapText: {
     fontSize: 14,
+    marginTop:3,
     color: "#777",
   },
   clubImageContainer: {
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
   clubName: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: "bold",
   },
   membersCount: {
@@ -184,7 +185,7 @@ const styles = StyleSheet.create({
     paddingBottom: 25,
     borderBottomWidth: 1,
     borderBottomColor: "#efefef",
-    backgroundColor: "#fff",
+    backgroundColor: "#f7f7f7",
   },
   headerLeft: {
     flex: 1,
