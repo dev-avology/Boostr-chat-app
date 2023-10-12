@@ -1,8 +1,15 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import BottomNavBar from '../navigation/BottomNavBar';
+import React, { useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
+import { AntDesign } from "@expo/vector-icons";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import BottomNavBar from "../navigation/BottomNavBar";
 import { useSelector, useDispatch } from "react-redux";
 import { memoizedgroupList } from "../selectors";
 import { fetchGroupList } from "../reducers/groupListSlice";
@@ -19,7 +26,7 @@ const AllGroupsScreen = ({ route, navigation }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-          dispatch(fetchGroupList(club?.post_id));
+        dispatch(fetchGroupList(club?.post_id));
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -27,7 +34,6 @@ const AllGroupsScreen = ({ route, navigation }) => {
 
     fetchData();
   }, [dispatch, navigation, AsUser]);
-
 
   return (
     <View style={styles.container}>
@@ -40,36 +46,38 @@ const AllGroupsScreen = ({ route, navigation }) => {
         </TouchableOpacity>
         <View style={styles.headerTextView}>
           <Text style={styles.headerText}>Add a team chat contact group</Text>
-          {club?.post_title ? <Text style={styles.headerSubText}>{club?.post_title}</Text>: null}
+          {club?.post_title ? (
+            <Text style={styles.headerSubText}>{club?.post_title}</Text>
+          ) : null}
         </View>
       </View>
       {loading ? (
         <View style={styles.containerLoader}>
           <ActivityIndicator size="large" color="#000" />
         </View>
-      ) : (<FlatList
-        data={groupList}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.groupItem}>
-            <View style={styles.groupInfo}>
-              <Text style={styles.groupName}>
-                {item.name}
-              </Text>
-              <Text style={styles.membersCount}>
-                {item.member_count} members
-              </Text>
-            </View>
-          </TouchableOpacity>
-        )}
-        keyExtractor={(item) => item.id}
-      />)}
+      ) : (
+        <FlatList
+          data={groupList}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={styles.groupItem}>
+              <View style={styles.groupInfo}>
+                <Text style={styles.groupName}>{item.name}</Text>
+                <Text style={styles.membersCount}>
+                  {item.member_count} members
+                </Text>
+              </View>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item) => item.id}
+        />
+      )}
       {/*<Button
         title="Create Group"
         onPress={createGroup}
         color="#00c0ff" // Set the button's background color
         style={styles.createGroupButton} // Apply custom styles
       />*/}
-      <BottomNavBar toggleState={toggleState} club={club} AsUser={AsUser}/>
+      <BottomNavBar toggleState={toggleState} club={club} AsUser={AsUser} />
     </View>
   );
 };
@@ -77,49 +85,49 @@ const AllGroupsScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   groupItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#efefef',
+    borderBottomColor: "#efefef",
   },
   groupName: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   membersCount: {
     fontSize: 14,
-    color: '#777',
+    color: "#777",
   },
   radio: {
     padding: 8,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 16,
-    paddingTop: Platform.OS == 'ios' ? 40 : 20,
+    paddingTop: Platform.OS == "ios" ? 40 : 20,
     paddingBottom: 25,
     borderBottomWidth: 1,
-    borderBottomColor: '#efefef',
-    backgroundColor: '#fff',
+    borderBottomColor: "#efefef",
+    backgroundColor: "#fff",
   },
   headerText: {
-    color: '#000',
+    color: "#000",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   headerSubText: {
-    color: '#000',
+    color: "#000",
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   headerTextView: {
-    flex: 1
+    flex: 1,
   },
   backButton: {
     marginRight: 10,

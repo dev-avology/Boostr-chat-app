@@ -1,9 +1,9 @@
-import { createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 import { resetAllStates } from "./resetSlice";
-import { CHAT_API_URL } from '../config';
+import { CHAT_API_URL } from "../config";
 const clubSlice = createSlice({
-  name: 'clubs',
+  name: "clubs",
   initialState: {
     clubs: [],
     loading: false,
@@ -38,9 +38,10 @@ export const {
 
 export const fetchClubList = (userId) => async (dispatch) => {
   try {
-    
     dispatch(fetchClubListStart());
-    const response = await axios.get(`${CHAT_API_URL}/get_club_list?user_id=${userId}`);
+    const response = await axios.get(
+      `${CHAT_API_URL}/get_club_list?user_id=${userId}`
+    );
     dispatch(fetchClubListSuccess(JSON.stringify(response.data)));
   } catch (error) {
     dispatch(fetchClubListFailure(error));

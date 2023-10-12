@@ -17,7 +17,6 @@ import Icon from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import bgImg from "../assets/chat-bg.png";
 import userPlaceholder from "../assets/user1.png";
-import { useNavigation } from "@react-navigation/native"; // Import useNavigation hook
 import { useDispatch, useSelector } from "react-redux";
 import { memoizedSelectUserData, memoizeduserMessages } from "../selectors";
 import {
@@ -32,7 +31,6 @@ import profileManager from "../assets/pm.png";
 const YOUR_REFRESH_INTERVAL = 5000;
 
 const ChatDashboard = ({ route, navigation }) => {
-  const [messages1, setMessages] = useState([]);
   const [messageText, setMessageText] = useState("");
   const flatlistRef = useRef(null);
   const dispatch = useDispatch();

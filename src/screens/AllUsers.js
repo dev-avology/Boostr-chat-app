@@ -15,11 +15,11 @@ import BottomNavBar from "../navigation/BottomNavBar";
 import {
   fetchUserContactList,
   fetchClubContactList,
-  createChatConversation
+  createChatConversation,
 } from "../reducers/contactListSlice";
 import { memoizedcontactList } from "../selectors";
-import userPlaceholder from '../assets/user1.png';
-import profileManager from '../assets/pm.png';
+import userPlaceholder from "../assets/user1.png";
+import profileManager from "../assets/pm.png";
 
 const Stack = createNativeStackNavigator();
 
@@ -69,33 +69,38 @@ const AllUserListScreen = ({ route, navigation }) => {
       ]}
     />
   );
-  
+
   const createConversation = (user_id, club_id) => {
     let payload = {};
     if (toggleState) {
       payload = {
         users: [user_id],
         user_id: AsUser,
-        role: 'member',
+        role: "member",
         club_id: club_id,
-        conversation_type: 'one-to-one'
+        conversation_type: "one-to-one",
       };
-    }else{
+    } else {
       payload = {
         users: [user_id],
         user_id: AsUser,
-        role: 'club',
+        role: "club",
         club_id: club_id,
-        conversation_type: 'one-to-one'
-      }
+        conversation_type: "one-to-one",
+      };
     }
-    dispatch(createChatConversation(payload)).then((data) => {
-      const conversation =  data?.data;
-      navigation.navigate("ChatDashboard", {conversation, AsUser, toggleState });
-    })
-    .catch((error) => {
-      console.log(error);
-    });;
+    dispatch(createChatConversation(payload))
+      .then((data) => {
+        const conversation = data?.data;
+        navigation.navigate("ChatDashboard", {
+          conversation,
+          AsUser,
+          toggleState,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -117,21 +122,32 @@ const AllUserListScreen = ({ route, navigation }) => {
         <FlatList
           data={contactList}
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.userItem} onPress={() => createConversation(item?.user_id, club?.post_id)}>
+            <TouchableOpacity
+              style={styles.userItem}
+              onPress={() => createConversation(item?.user_id, club?.post_id)}
+            >
               {item ? (
                 <>
                   <View style={styles.statusContainer}>
-                    {item?.user_photo ? <Image
-                      source={{ uri: item?.user_photo }}
-                      style={styles.userImage}
-                    /> : <Image source={userPlaceholder}  style={styles.userImage}/> }
+                    {item?.user_photo ? (
+                      <Image
+                        source={{ uri: item?.user_photo }}
+                        style={styles.userImage}
+                      />
+                    ) : (
+                      <Image
+                        source={userPlaceholder}
+                        style={styles.userImage}
+                      />
+                    )}
                     {renderStatusIndicator(item?.status)}
                   </View>
                   <View style={styles.userInfo}>
                     <Text style={styles.userName}>
-                      {item?.first_name} {item?.last_name} {item?.profile_manager ? (
-                      <Image source={profileManager}  style={styles.pmImg}/>
-                    ) : null}
+                      {item?.first_name} {item?.last_name}{" "}
+                      {item?.profile_manager ? (
+                        <Image source={profileManager} style={styles.pmImg} />
+                      ) : null}
                     </Text>
                   </View>
                 </>
@@ -141,7 +157,7 @@ const AllUserListScreen = ({ route, navigation }) => {
           keyExtractor={(item) => item.user_id} // Use item.id as the key
         />
       )}
-      <BottomNavBar toggleState={toggleState} club={club} AsUser={AsUser}/>
+      <BottomNavBar toggleState={toggleState} club={club} AsUser={AsUser} />
     </View>
   );
 };
@@ -168,7 +184,7 @@ const styles = StyleSheet.create({
   pmImg: {
     width: 20,
     height: 20,
-    objectFit:'contain'
+    objectFit: "contain",
   },
   userInfo: {
     flex: 1,

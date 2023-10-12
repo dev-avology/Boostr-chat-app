@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -14,10 +14,12 @@ import BottomNavBar from "../navigation/BottomNavBar";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../actions/auth";
 import { fetchUserData } from "../reducers/loginReducer";
-import { memoizedSelectUserData } from '../selectors';
+import { memoizedSelectUserData } from "../selectors";
 
 const SettingsPage = ({ navigation }) => {
-  const CurrentUserID = useSelector((state) => JSON.parse(state.auth.userData)?.user_id);
+  const CurrentUserID = useSelector(
+    (state) => JSON.parse(state.auth.userData)?.user_id
+  );
   const loading = useSelector((state) => state.auth.loading);
   const userData = useSelector(memoizedSelectUserData);
   const dispatch = useDispatch();
@@ -55,13 +57,10 @@ const SettingsPage = ({ navigation }) => {
       }
     };
 
-    fetchData(); // Call the async function
-
+    fetchData();
   }, [dispatch, navigation]);
 
-  const handleChangePassword = () => {
-    // Add logic for changing password here
-  };
+  const handleChangePassword = () => {};
 
   const handleLogout = () => {
     dispatch(logout()).then((response) => {
@@ -108,7 +107,7 @@ const SettingsPage = ({ navigation }) => {
               {userData?.first_name} {userData?.last_name}
             </Text>
             <Text style={styles.userStatus}>{userData.user_email}</Text>
-            
+
             <View style={styles.mainBox}>
               <TouchableOpacity
                 style={styles.optionButton}
@@ -180,7 +179,7 @@ const styles = StyleSheet.create({
     left: 0,
     flexDirection: "row",
     alignItems: "center",
-    paddingTop: Platform.OS == 'ios' ? 40 : 20,
+    paddingTop: Platform.OS == "ios" ? 40 : 20,
     paddingBottom: 15,
     borderBottomWidth: 1,
     borderBottomColor: "#efefef",

@@ -26,7 +26,7 @@ const chatMessagesSlice = createSlice({
       state.error = action.payload;
     },
     addMessage: (state, action) => {
-        state.messages.push(action.payload);
+      state.messages.push(action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -40,7 +40,7 @@ export const {
   fetchUserMessagesStart,
   fetchUserMessagesSuccess,
   fetchUserMessagesFailure,
-  addMessage
+  addMessage,
 } = chatMessagesSlice.actions;
 
 export const fetchUserMessages =
@@ -83,7 +83,10 @@ export const autofetchUserMessages =
 
 export const sendMessage = (payload) => async () => {
   try {
-    const response = await axios.post(`${CHAT_API_URL}/chat_send_text_message`, payload);
+    const response = await axios.post(
+      `${CHAT_API_URL}/chat_send_text_message`,
+      payload
+    );
     return response.data;
   } catch (error) {
     return error.response.data;

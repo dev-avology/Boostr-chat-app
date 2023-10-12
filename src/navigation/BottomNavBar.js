@@ -217,7 +217,7 @@ const BottomNavBar = ({ onSearch, toggleState, club, AsUser }) => {
       )}
       {isOverlayVisible && (
         <TouchableOpacity
-        style={[
+          style={[
             styles.transparentOverlay,
             {
               height: windowHeight,
@@ -251,8 +251,8 @@ const styles = StyleSheet.create({
   },
   transparentOverlay: {
     position: "absolute",
-    bottom:0,
-    backgroundColor:'rgba(0,0,0,0.1)',
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.1)",
     left: 0,
     right: 0,
     padding: 0,
@@ -266,8 +266,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 8,
-    zIndex:9,
-    backgroundColor:'#fff'
+    zIndex: 9,
+    backgroundColor: "#fff",
   },
   iconButton: {
     padding: 8,
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    zIndex:9
+    zIndex: 9,
   },
   overlayButton: {
     width: "100%",

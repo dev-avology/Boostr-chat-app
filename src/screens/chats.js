@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   FlatList,
   ActivityIndicator,
-  Platform
+  Platform,
 } from "react-native";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -17,9 +17,9 @@ import { memoizedSelectUserData, memoizedConversations } from "../selectors";
 import { useSelector, useDispatch } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 import { fetchConversationsList } from "../reducers/conversationSlice";
-import GroupImg from '../assets/group_icons.png'
-import userPlaceholder from '../assets/user1.png'
-import profileManager from '../assets/pm.png';
+import GroupImg from "../assets/group_icons.png";
+import userPlaceholder from "../assets/user1.png";
+import profileManager from "../assets/pm.png";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -27,7 +27,7 @@ const UsersListScreen = ({
   chatUsers,
   handleUserClick,
   renderStatusIndicator,
-  userID
+  userID,
 }) => {
   return (
     <View style={styles.container}>
@@ -42,20 +42,28 @@ const UsersListScreen = ({
                 key={participant?.user_id}
               >
                 <View style={styles.statusContainer}>
-                  {participant?.user_photo ? <Image
-                    source={{ uri: participant?.user_photo }}
-                    style={styles.userImage}
-                  /> : <Image source={userPlaceholder}  style={styles.userImage}/> }
+                  {participant?.user_photo ? (
+                    <Image
+                      source={{ uri: participant?.user_photo }}
+                      style={styles.userImage}
+                    />
+                  ) : (
+                    <Image source={userPlaceholder} style={styles.userImage} />
+                  )}
                   {renderStatusIndicator(participant?.status)}
                 </View>
                 <View style={styles.userInfo}>
                   <Text style={styles.userName}>
-                    {participant?.first_name} {participant?.last_name} {participant?.profile_manager ? (
-                      <Image source={profileManager} style={styles.pmImg}/>
+                    {participant?.first_name} {participant?.last_name}{" "}
+                    {participant?.profile_manager ? (
+                      <Image source={profileManager} style={styles.pmImg} />
                     ) : null}
                   </Text>
-                  {participant?.lastMessage ? <Text style={styles.lastMessage}>{participant?.lastMessage}
-                  </Text> : null}
+                  {participant?.lastMessage ? (
+                    <Text style={styles.lastMessage}>
+                      {participant?.lastMessage}
+                    </Text>
+                  ) : null}
                 </View>
                 <View style={styles.messageDetails}>
                   {item?.unread_count ? (
@@ -89,11 +97,11 @@ const GroupsListScreen = ({ chatGroups, handleUserClick, userID }) => {
       <FlatList
         data={chatGroups}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.groupItem} onPress={() => handleUserClick(item, userID)}>
-            <Image
-              source={GroupImg}
-              style={styles.groupImage}
-            />
+          <TouchableOpacity
+            style={styles.groupItem}
+            onPress={() => handleUserClick(item, userID)}
+          >
+            <Image source={GroupImg} style={styles.groupImage} />
             <View style={styles.groupInfo}>
               <Text style={styles.groupName}>{item.conversation_name}</Text>
               <Text style={styles.groupMembers}>
@@ -222,38 +230,44 @@ const ChatUserLists = ({ route, navigation }) => {
         </View>
       </View>
       {loading ? (
-          <View style={styles.containerLoader}>
-            <ActivityIndicator size="large" color="#000" />
-          </View>
+        <View style={styles.containerLoader}>
+          <ActivityIndicator size="large" color="#000" />
+        </View>
       ) : (
-          <Tab.Navigator screenOptions={{
-            tabBarLabelStyle: { fontSize: 15, fontWeight:600},
-            tabBarStyle: {}
-          }} >
-            <Tab.Screen name="Direct Chat" options={{ title: 'Direct Chat' }}>
-                {() =>
-                  chatUsers?.length > 0 ? (
-                    <UsersListScreen
-                      chatUsers={chatUsers}
-                      handleUserClick={handleUserClick}
-                      renderStatusIndicator={renderStatusIndicator}
-                      userID={AsUser}
-                    />
-                  ) : (
-                    <Text style={styles.notFound}>No direct chats found.</Text>
-                  )
-                }
-            </Tab.Screen>
-            <Tab.Screen name="Group Chat" options={{ title: 'Groups Chat' }}>
-              {() =>
-                chatGroups?.length > 0 ? (
-                  <GroupsListScreen chatGroups={chatGroups} handleUserClick={handleUserClick} userID={AsUser}/>
-                ) : (
-                  <Text style={styles.notFound}>No group chats found.</Text>
-                )
-              }
-            </Tab.Screen>
-          </Tab.Navigator>
+        <Tab.Navigator
+          screenOptions={{
+            tabBarLabelStyle: { fontSize: 15, fontWeight: 600 },
+            tabBarStyle: {},
+          }}
+        >
+          <Tab.Screen name="Direct Chat" options={{ title: "Direct Chat" }}>
+            {() =>
+              chatUsers?.length > 0 ? (
+                <UsersListScreen
+                  chatUsers={chatUsers}
+                  handleUserClick={handleUserClick}
+                  renderStatusIndicator={renderStatusIndicator}
+                  userID={AsUser}
+                />
+              ) : (
+                <Text style={styles.notFound}>No direct chats found.</Text>
+              )
+            }
+          </Tab.Screen>
+          <Tab.Screen name="Group Chat" options={{ title: "Groups Chat" }}>
+            {() =>
+              chatGroups?.length > 0 ? (
+                <GroupsListScreen
+                  chatGroups={chatGroups}
+                  handleUserClick={handleUserClick}
+                  userID={AsUser}
+                />
+              ) : (
+                <Text style={styles.notFound}>No group chats found.</Text>
+              )
+            }
+          </Tab.Screen>
+        </Tab.Navigator>
       )}
       <BottomNavBar toggleState={toggleState} club={club} AsUser={AsUser} />
     </>
@@ -263,13 +277,13 @@ const ChatUserLists = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:"#fff"
+    backgroundColor: "#fff",
   },
   notFound: {
     textAlign: "center",
     fontSize: 20,
     padding: 20,
-    backgroundColor:"#fff",
+    backgroundColor: "#fff",
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
@@ -277,9 +291,9 @@ const styles = StyleSheet.create({
   userItem: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center", 
-    paddingHorizontal:15,
-    paddingVertical:10,
+    justifyContent: "center",
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#efefef",
   },
@@ -289,8 +303,8 @@ const styles = StyleSheet.create({
   groupItem: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal:15,
-    paddingVertical:10,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#efefef",
   },
@@ -304,7 +318,7 @@ const styles = StyleSheet.create({
   pmImg: {
     width: 20,
     height: 20,
-    objectFit:'contain'
+    objectFit: "contain",
   },
   groupImage: {
     width: 45,
@@ -323,11 +337,11 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 17,
-    fontWeight:"600"
+    fontWeight: "600",
   },
   groupName: {
     fontSize: 17,
-    fontWeight:"600"
+    fontWeight: "600",
   },
   lastMessage: {
     color: "#777",
@@ -372,7 +386,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 15,
-    paddingTop: Platform.OS == 'ios' ? 35 : 20,
+    paddingTop: Platform.OS == "ios" ? 35 : 20,
     paddingBottom: 15,
     borderBottomWidth: 1,
     borderBottomColor: "#efefef",
