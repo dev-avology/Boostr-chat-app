@@ -188,13 +188,14 @@ const ChatDashboard = ({ route, navigation }) => {
             onPress={goToUserProfile}
           >
             <View style={styles.statusContainer}>
-              {user?.user_photo ? <Image
-                source={{ uri: user?.user_photo }}
-                style={styles.userImage}
-              /> : <Image
-                source={userPlaceholder}
-                style={styles.userImage}
-              />}
+              {user?.user_photo ? (
+                <Image
+                  source={{ uri: user?.user_photo }}
+                  style={styles.userImage}
+                />
+              ) : (
+                <Image source={userPlaceholder} style={styles.userImage} />
+              )}
               {renderStatusIndicator(user?.status)}
             </View>
             <View style={styles.userInfo}>
@@ -259,10 +260,19 @@ const ChatDashboard = ({ route, navigation }) => {
                     </Text>
                   </View>
                   {item.sender_id != AsUser ? (
-                    <Image
-                      source={{ uri: item?.user_photo }}
-                      style={styles.userProfileImage}
-                    />
+                    <>
+                      {item?.user_photo ? (
+                        <Image
+                          source={{ uri: item?.user_photo }}
+                          style={styles.userProfileImage}
+                        />
+                      ) : (
+                        <Image
+                          source={userPlaceholder}
+                          style={styles.userImage}
+                        />
+                      )}
+                    </>
                   ) : null}
                 </View>
               )}
