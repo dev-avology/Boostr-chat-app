@@ -1,82 +1,72 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native';
-import { AntDesign, FontAwesome } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import BottomNavBar from '../navigation/BottomNavBar';
-import { checkUserData } from './authUtils';
-import { CHAT_API_URL } from '../config';
+import React, { useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
+import { AntDesign } from "@expo/vector-icons";
+import { useSelector, useDispatch } from "react-redux";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import BottomNavBar from "../navigation/BottomNavBar";
+import {
+  fetchUserContactList,
+  fetchClubContactList,
+} from "../reducers/contactListSlice";
+import { memoizedcontactList } from "../selectors";
+import userPlaceholder from '../assets/user1.png';
+import profileManager from '../assets/pm.png';
+
 const Stack = createNativeStackNavigator();
 
-const AllUserListScreen = () => {
-  const navigation = useNavigation();
-
-  const [chatUsers, setChatUsers] = useState([]);
-  const [userData, setUserData] = useState(null);
+const AllUserListScreen = ({ route, navigation }) => {
+  //const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const club = route.params.club;
+  const toggleState = route.params.toggleState;
+  const AsUser = route.params.AsUser;
+  const contactList = useSelector(memoizedcontactList);
+  const loading = useSelector((state) => state.contactList.loading);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const user = await checkUserData('${CHAT_API_URL}/chat_user_get_list_of_contacts');
-      console.log('Fetched user data:', user);
-      if (user) {
-        setUserData(user);
+    const fetchData = async () => {
+      try {
+        if (toggleState) {
+          dispatch(fetchUserContactList(club?.post_id, AsUser));
+        } else {
+          dispatch(fetchClubContactList(club?.post_id));
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
     };
 
-    fetchUserData();
-  }, []);
-
-  useEffect(() => {
-    const fetchedChatUsers = [
-      {
-        id: '1',
-        name: 'John Doe',
-        profileImg: require('../assets/user3.png'),
-        lastMessage: 'Hello there!',
-        status: 'active',
-      },
-      {
-        id: '2',
-        name: 'Jane Smith',
-        profileImg: require('../assets/user2.png'),
-        lastMessage: 'Hi, how are you?',
-        status: 'away',
-      },
-      {
-        id: '3',
-        name: 'Trump',
-        profileImg: require('../assets/user5.png'),
-        lastMessage: 'Hello there!',
-        status: 'active',
-      },
-      {
-        id: '4',
-        name: 'Jack',
-        profileImg: require('../assets/user6.png'),
-        lastMessage: 'Hi, how are you?',
-        status: 'away',
-      },
-      // Add more user data here
-    ];
-
-    setChatUsers(fetchedChatUsers);
-  }, []);
+    fetchData();
+  }, [dispatch, navigation, AsUser]);
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'active':
-        return '#0F0';
-      case 'offline':
-        return '#F00';
-      case 'away':
-        return 'gray';
+      case "online":
+        return "#0F0";
+      case "offline":
+        return "#F00";
+      case "away":
+        return "gray";
       default:
-        return '#777';
+        return "#777";
     }
   };
 
   const renderStatusIndicator = (status) => (
-    <View style={[styles.statusIndicator, { backgroundColor: getStatusColor(status) }]} />
+    <View
+      style={[
+        styles.statusIndicator,
+        { backgroundColor: getStatusColor(status) },
+      ]}
+    />
   );
 
   return (
@@ -90,29 +80,39 @@ const AllUserListScreen = () => {
         </TouchableOpacity>
         <Text style={styles.headerText}>Add Contact</Text>
       </View>
-      <FlatList
-        data={chatUsers}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.userItem}
-          >
-            {userData ? (
-              <>
-            <View style={styles.statusContainer}>
-              <Image source={item.profileImg} style={styles.userImage} />
-              {renderStatusIndicator(item.status)}
-            </View>
-            <View style={styles.userInfo}>
-              <Text style={styles.userName}>{userData.user_nicename}</Text>
-              <Text style={styles.lastMessage}>{userData.user_status}</Text>
-            </View>
-            </>
-            ) : null }
-          </TouchableOpacity>
-        )}
-        keyExtractor={(item) => item.id}
-      />
-      <BottomNavBar />
+      {loading ? (
+        <View style={styles.containerLoader}>
+          <ActivityIndicator size="large" color="#000" />
+        </View>
+      ) : (
+        <FlatList
+          data={contactList}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={styles.userItem}>
+              {item ? (
+                <>
+                  <View style={styles.statusContainer}>
+                    {item?.user_photo ? <Image
+                      source={{ uri: item?.user_photo }}
+                      style={styles.userImage}
+                    /> : <Image source={userPlaceholder}  style={styles.userImage}/> }
+                    {renderStatusIndicator(item?.status)}
+                  </View>
+                  <View style={styles.userInfo}>
+                    <Text style={styles.userName}>
+                      {item?.first_name} {item?.last_name} {item?.profile_manager ? (
+                      <Image source={profileManager}  style={styles.pmImg}/>
+                    ) : null}
+                    </Text>
+                  </View>
+                </>
+              ) : null}
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item) => item.user_id} // Use item.id as the key
+        />
+      )}
+      <BottomNavBar toggleState={toggleState} club={club} AsUser={AsUser}/>
     </View>
   );
 };
@@ -120,21 +120,26 @@ const AllUserListScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   userItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#efefef',
+    borderBottomColor: "#efefef",
   },
   userImage: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    borderColor: '#efefef',
+    borderColor: "#efefef",
     borderWidth: 1,
+  },
+  pmImg: {
+    width: 20,
+    height: 20,
+    objectFit:'contain'
   },
   userInfo: {
     flex: 1,
@@ -142,16 +147,16 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   lastMessage: {
-    color: '#777',
+    color: "#777",
   },
   statusIndicator: {
     width: 12,
     height: 12,
     borderRadius: 6,
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     right: 0,
   },
@@ -160,23 +165,28 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
     paddingHorizontal: 16,
-    paddingTop: 25,
+    paddingTop: Platform.OS == "ios" ? 40 : 20,
     paddingBottom: 25,
     borderBottomWidth: 1,
-    borderBottomColor: '#efefef',
-    backgroundColor: '#fff',
+    borderBottomColor: "#efefef",
+    backgroundColor: "#fff",
   },
   headerText: {
-    color: '#000',
+    color: "#000",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   backButton: {
     marginRight: 10,
+  },
+  containerLoader: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

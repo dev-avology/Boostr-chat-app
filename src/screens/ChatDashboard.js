@@ -16,6 +16,7 @@ import {
 import Icon from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import bgImg from "../assets/chat-bg.png";
+import userPlaceholder from "../assets/user1.png";
 import { useNavigation } from "@react-navigation/native"; // Import useNavigation hook
 import { useDispatch, useSelector } from "react-redux";
 import { memoizedSelectUserData, memoizeduserMessages } from "../selectors";
@@ -26,6 +27,7 @@ import {
   addMessage,
 } from "../reducers/chatMessagesSlice";
 import * as ImagePicker from "expo-image-picker";
+import profileManager from "../assets/pm.png";
 
 const YOUR_REFRESH_INTERVAL = 5000;
 
@@ -42,8 +44,8 @@ const ChatDashboard = ({ route, navigation }) => {
 
   const conversation = route.params.conversation;
   const asUser = route.params.asUser;
-  const user = conversation.participants.find(
-    (participant) => participant.user_id !== userData?.user_id
+  const user = conversation?.participants.find(
+    (participant) => participant.user_id != asUser
   );
   const recipient_ids = conversation?.participants.map((item) => item.user_id);
 
@@ -97,7 +99,7 @@ const ChatDashboard = ({ route, navigation }) => {
     if (messageText.trim() === "") {
       return;
     }
-/*
+
     setIsLoading(true);
     const newMessage = {
       content: messageText,
@@ -121,25 +123,45 @@ const ChatDashboard = ({ route, navigation }) => {
       });
 
     flatlistRef.current.scrollToEnd();
-    */
   };
 
   const goToUserProfile = () => {
-    navigation.navigate("UserProfile", { asUser });
+    navigation.navigate("UserProfile", { conversation, user });
   };
 
   const pickImage = async () => {
-    /*let result = await ImagePicker.launchImageLibraryAsync({
+    let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      CameraType: 'Back',
+      CameraType: "Back",
       aspect: [4, 3],
       quality: 0.5,
     });
-    console.log(result);
-    if (!result.canceled) {
-    }*/
+    if (!result?.canceled) {
+    }
   };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "online":
+        return "#0F0";
+      case "offline":
+        return "#F00";
+      case "away":
+        return "gray";
+      default:
+        return "#777";
+    }
+  };
+
+  const renderStatusIndicator = (status) => (
+    <View
+      style={[
+        styles.statusIndicator,
+        { backgroundColor: getStatusColor(status) },
+      ]}
+    />
+  );
 
   return (
     <ImageBackground style={styles.img_top} source={bgImg} resizeMode="cover">
@@ -157,20 +179,36 @@ const ChatDashboard = ({ route, navigation }) => {
               style={styles.backIcon}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={goToUserProfile}>
-            <View style={styles.userInfo}>
-              <Image
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onPress={goToUserProfile}
+          >
+            <View style={styles.statusContainer}>
+              {user?.user_photo ? <Image
                 source={{ uri: user?.user_photo }}
                 style={styles.userImage}
-              />
-              <View>
-                <Text style={styles.userName}>
-                  {conversation?.conversation_type == "group"
-                    ? conversation?.conversation_name
-                    : user?.first_name + "" + user?.last_name}
-                </Text>
-                {user?.status ? <Text style={styles.userStatus}>{user?.status}</Text> : null}
-              </View>
+              /> : <Image
+                source={userPlaceholder}
+                style={styles.userImage}
+              />}
+              {renderStatusIndicator(user?.status)}
+            </View>
+            <View style={styles.userInfo}>
+              <Text style={styles.userName}>
+                {conversation?.conversation_type == "group"
+                  ? conversation?.conversation_name
+                  : user?.first_name + " " + user?.last_name}{" "}
+                {user?.profile_manager ? (
+                  <Image source={profileManager} style={styles.pmImg} />
+                ) : null}
+              </Text>
+              {user?.status ? (
+                <Text style={styles.userStatus}>{user?.status}</Text>
+              ) : null}
             </View>
           </TouchableOpacity>
         </View>
@@ -195,6 +233,7 @@ const ChatDashboard = ({ route, navigation }) => {
                   style={{
                     alignSelf:
                       item.sender_id == asUser ? "flex-end" : "flex-start",
+                    marginBottom: 5,
                   }}
                 >
                   <View
@@ -276,13 +315,22 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal:15,
-    paddingTop: 25,
+    paddingHorizontal: 15,
+    paddingTop: Platform.OS == "ios" ? 40 : 20,
     paddingBottom: 15,
     borderBottomWidth: 1,
     borderBottomColor: "#efefef",
     backgroundColor: "#f7f7f7",
   },
+  statusIndicator: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+  },
+
   backIcon: {
     width: 24,
     height: 24,
@@ -293,7 +341,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     borderColor: "#efefef",
     borderWidth: 1,
-    marginHorizontal: 10,
+    marginHorizontal: 0,
   },
   userProfileImage: {
     width: 20,
@@ -301,16 +349,23 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     borderColor: "#efefef",
     borderWidth: 1,
-    marginHorizontal: 7,
   },
   userInfo: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center"
+    flex: 1,
+    marginLeft: 16,
   },
   userName: {
     fontSize: 17,
     fontWeight: "600",
+  },
+  pmImg: {
+    width: 20,
+    height: 20,
+    objectFit: "contain",
+  },
+  statusContainer: {
+    marginRight: 0,
+    marginBottom: 0,
   },
   userStatus: {
     fontSize: 14,

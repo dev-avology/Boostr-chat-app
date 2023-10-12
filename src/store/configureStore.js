@@ -6,12 +6,16 @@ import resetReducer from "../reducers/resetSlice";
 import clubListReducer from '../reducers/clubListSlice';
 import conversationsReducer from '../reducers/conversationSlice';
 import chatMessagesReducer from '../reducers/chatMessagesSlice';
+import contactListReducer from '../reducers/contactListSlice';
+import groupListReducer from '../reducers/groupListSlice';
 
 const rootReducer = combineReducers({
   auth: loginReducer,
   clubList: clubListReducer,
   conversations: conversationsReducer,
-  userMessages: chatMessagesReducer
+  userMessages: chatMessagesReducer,
+  contactList: contactListReducer,
+  groupList: groupListReducer,
 });
 
 const store = configureStore({
