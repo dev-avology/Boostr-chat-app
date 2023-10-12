@@ -16,6 +16,7 @@ import {
 import Icon from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import bgImg from "../assets/chat-bg.png";
+import userPlaceholder from "../assets/user1.png";
 import { useNavigation } from "@react-navigation/native"; // Import useNavigation hook
 import { useDispatch, useSelector } from "react-redux";
 import { memoizedSelectUserData, memoizeduserMessages } from "../selectors";
@@ -26,6 +27,7 @@ import {
   addMessage,
 } from "../reducers/chatMessagesSlice";
 import * as ImagePicker from "expo-image-picker";
+import profileManager from "../assets/pm.png";
 
 const YOUR_REFRESH_INTERVAL = 5000;
 
@@ -41,17 +43,17 @@ const ChatDashboard = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const conversation = route.params.conversation;
-  const asUser = route.params.asUser;
-  const user = conversation.participants.find(
-    (participant) => participant.user_id !== userData?.user_id
+  const AsUser = route.params.AsUser;
+  const user = conversation?.participants.find(
+    (participant) => participant.user_id != AsUser
   );
   const recipient_ids = conversation?.participants.map((item) => item.user_id);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (asUser) {
-          dispatch(fetchUserMessages(conversation?.id, asUser));
+        if (AsUser) {
+          dispatch(fetchUserMessages(conversation?.id, AsUser));
         }
       } catch (error) {
         //console.error("Error fetching data:", error);
@@ -60,8 +62,8 @@ const ChatDashboard = ({ route, navigation }) => {
     };
     const autofetchData = async () => {
       try {
-        if (asUser) {
-          dispatch(autofetchUserMessages(conversation?.id, asUser));
+        if (AsUser) {
+          dispatch(autofetchUserMessages(conversation?.id, AsUser));
         }
       } catch (error) {
         //console.error("Error fetching data:", error);
@@ -78,7 +80,7 @@ const ChatDashboard = ({ route, navigation }) => {
     return () => {
       clearInterval(refreshInterval);
     };
-  }, [dispatch, navigation, asUser, conversation]);
+  }, [dispatch, navigation, AsUser, conversation]);
   useEffect(() => {
     const backAction = () => {
       navigation.goBack();
@@ -97,11 +99,11 @@ const ChatDashboard = ({ route, navigation }) => {
     if (messageText.trim() === "") {
       return;
     }
-/*
+
     setIsLoading(true);
     const newMessage = {
       content: messageText,
-      sender_id: asUser,
+      sender_id: AsUser,
       conversation_id: conversation?.id,
       message_type: "text",
       recipient_ids: recipient_ids,
@@ -121,25 +123,45 @@ const ChatDashboard = ({ route, navigation }) => {
       });
 
     flatlistRef.current.scrollToEnd();
-    */
   };
 
   const goToUserProfile = () => {
-    navigation.navigate("UserProfile", { asUser });
+    navigation.navigate("UserProfile", { conversation, user });
   };
 
   const pickImage = async () => {
-    /*let result = await ImagePicker.launchImageLibraryAsync({
+    let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      CameraType: 'Back',
+      CameraType: "Back",
       aspect: [4, 3],
       quality: 0.5,
     });
-    console.log(result);
-    if (!result.canceled) {
-    }*/
+    if (!result?.canceled) {
+    }
   };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "online":
+        return "#0F0";
+      case "offline":
+        return "#F00";
+      case "away":
+        return "gray";
+      default:
+        return "#777";
+    }
+  };
+
+  const renderStatusIndicator = (status) => (
+    <View
+      style={[
+        styles.statusIndicator,
+        { backgroundColor: getStatusColor(status) },
+      ]}
+    />
+  );
 
   return (
     <ImageBackground style={styles.img_top} source={bgImg} resizeMode="cover">
@@ -157,20 +179,37 @@ const ChatDashboard = ({ route, navigation }) => {
               style={styles.backIcon}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={goToUserProfile}>
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onPress={goToUserProfile}
+          >
+            <View style={styles.statusContainer}>
+              {user?.user_photo ? (
+                <Image
+                  source={{ uri: user?.user_photo }}
+                  style={styles.userImage}
+                />
+              ) : (
+                <Image source={userPlaceholder} style={styles.userImage} />
+              )}
+              {renderStatusIndicator(user?.status)}
+            </View>
             <View style={styles.userInfo}>
-              <Image
-                source={{ uri: user?.user_photo }}
-                style={styles.userImage}
-              />
-              <View>
-                <Text style={styles.userName}>
-                  {conversation?.conversation_type == "group"
-                    ? conversation?.conversation_name
-                    : user?.first_name + "" + user?.last_name}
-                </Text>
-                {user?.status ? <Text style={styles.userStatus}>{user?.status}</Text> : null}
-              </View>
+              <Text style={styles.userName}>
+                {conversation?.conversation_type == "group"
+                  ? conversation?.conversation_name
+                  : user?.first_name + " " + user?.last_name}{" "}
+                {user?.profile_manager ? (
+                  <Image source={profileManager} style={styles.pmImg} />
+                ) : null}
+              </Text>
+              {user?.status ? (
+                <Text style={styles.userStatus}>{user?.status}</Text>
+              ) : null}
             </View>
           </TouchableOpacity>
         </View>
@@ -194,7 +233,8 @@ const ChatDashboard = ({ route, navigation }) => {
                 <View
                   style={{
                     alignSelf:
-                      item.sender_id == asUser ? "flex-end" : "flex-start",
+                      item.sender_id == AsUser ? "flex-end" : "flex-start",
+                    marginBottom: 5,
                   }}
                 >
                   <View
@@ -202,9 +242,9 @@ const ChatDashboard = ({ route, navigation }) => {
                       styles.message,
                       {
                         alignSelf:
-                          item.sender_id == asUser ? "flex-end" : "flex-start",
+                          item.sender_id == AsUser ? "flex-end" : "flex-start",
                         backgroundColor:
-                          item.sender_id == asUser ? "#00c0ff" : "#fff",
+                          item.sender_id == AsUser ? "#00c0ff" : "#fff",
                       },
                     ]}
                   >
@@ -212,18 +252,27 @@ const ChatDashboard = ({ route, navigation }) => {
                       style={[
                         styles.messageText,
                         {
-                          color: item.sender_id == asUser ? "#fff" : "#333",
+                          color: item.sender_id == AsUser ? "#fff" : "#333",
                         },
                       ]}
                     >
                       {item.content}
                     </Text>
                   </View>
-                  {item.sender_id != asUser ? (
-                    <Image
-                      source={{ uri: item?.user_photo }}
-                      style={styles.userProfileImage}
-                    />
+                  {item.sender_id != AsUser ? (
+                    <>
+                      {item?.user_photo ? (
+                        <Image
+                          source={{ uri: item?.user_photo }}
+                          style={styles.userProfileImage}
+                        />
+                      ) : (
+                        <Image
+                          source={userPlaceholder}
+                          style={styles.userImage}
+                        />
+                      )}
+                    </>
                   ) : null}
                 </View>
               )}
@@ -276,13 +325,22 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal:15,
-    paddingTop: 25,
+    paddingHorizontal: 15,
+    paddingTop: Platform.OS == "ios" ? 40 : 20,
     paddingBottom: 15,
     borderBottomWidth: 1,
     borderBottomColor: "#efefef",
     backgroundColor: "#f7f7f7",
   },
+  statusIndicator: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+  },
+
   backIcon: {
     width: 24,
     height: 24,
@@ -293,7 +351,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     borderColor: "#efefef",
     borderWidth: 1,
-    marginHorizontal: 10,
+    marginHorizontal: 0,
   },
   userProfileImage: {
     width: 20,
@@ -301,16 +359,23 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     borderColor: "#efefef",
     borderWidth: 1,
-    marginHorizontal: 7,
   },
   userInfo: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center"
+    flex: 1,
+    marginLeft: 16,
   },
   userName: {
     fontSize: 17,
     fontWeight: "600",
+  },
+  pmImg: {
+    width: 20,
+    height: 20,
+    objectFit: "contain",
+  },
+  statusContainer: {
+    marginRight: 0,
+    marginBottom: 0,
   },
   userStatus: {
     fontSize: 14,

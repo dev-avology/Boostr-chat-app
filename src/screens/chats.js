@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   FlatList,
   ActivityIndicator,
-  ImageBackground
+  Platform
 } from "react-native";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -18,6 +18,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 import { fetchConversationsList } from "../reducers/conversationSlice";
 import GroupImg from '../assets/group_icons.png'
+import userPlaceholder from '../assets/user1.png'
+import profileManager from '../assets/pm.png';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -37,18 +39,20 @@ const UsersListScreen = ({
               <TouchableOpacity
                 style={styles.userItem}
                 onPress={() => handleUserClick(item, userID)}
-                key={i}
+                key={participant?.user_id}
               >
                 <View style={styles.statusContainer}>
-                  <Image
+                  {participant?.user_photo ? <Image
                     source={{ uri: participant?.user_photo }}
                     style={styles.userImage}
-                  />
+                  /> : <Image source={userPlaceholder}  style={styles.userImage}/> }
                   {renderStatusIndicator(participant?.status)}
                 </View>
                 <View style={styles.userInfo}>
                   <Text style={styles.userName}>
-                    {participant?.first_name} {participant?.last_name}
+                    {participant?.first_name} {participant?.last_name} {participant?.profile_manager ? (
+                      <Image source={profileManager} style={styles.pmImg}/>
+                    ) : null}
                   </Text>
                   {participant?.lastMessage ? <Text style={styles.lastMessage}>{participant?.lastMessage}
                   </Text> : null}
@@ -69,7 +73,7 @@ const UsersListScreen = ({
             ) : null
           )
         }
-        keyExtractor={(item) => item?.club_id}
+        keyExtractor={(item) => item?.id}
       />
     </View>
   );
@@ -175,8 +179,8 @@ const ChatUserLists = ({ route, navigation }) => {
     />
   );
 
-  const handleUserClick = (conversation, asUser) => {
-    navigation.navigate("ChatDashboard", { conversation, asUser });
+  const handleUserClick = (conversation, AsUser) => {
+    navigation.navigate("ChatDashboard", { conversation, AsUser, toggleState });
   };
 
   const toggleShuffle = () => {
@@ -251,7 +255,7 @@ const ChatUserLists = ({ route, navigation }) => {
             </Tab.Screen>
           </Tab.Navigator>
       )}
-      <BottomNavBar />
+      <BottomNavBar toggleState={toggleState} club={club} AsUser={AsUser} />
     </>
   );
 };
@@ -296,6 +300,11 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     borderColor: "#efefef",
     borderWidth: 1,
+  },
+  pmImg: {
+    width: 20,
+    height: 20,
+    objectFit:'contain'
   },
   groupImage: {
     width: 45,
@@ -363,7 +372,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 15,
-    paddingTop: 35,
+    paddingTop: Platform.OS == 'ios' ? 35 : 20,
     paddingBottom: 15,
     borderBottomWidth: 1,
     borderBottomColor: "#efefef",

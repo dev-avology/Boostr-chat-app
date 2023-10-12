@@ -14,7 +14,7 @@ import UserProfile from "./src/screens/UserProfile";
 import SelectProfileScreen from "./src/screens/SelectProfile";
 import ClubList from "./src/screens/ClubList";
 import SettingsPage from "./src/screens/Settings";
-import AllUserList from "./src/screens/AllUsers";
+import AllUserListScreen from "./src/screens/AllUsers";
 import AllGroupsscreen from "./src/screens/AllGroups";
 import GroupProfile from "./src/screens/GroupProfile";
 import GroupChatDashboard from "./src/screens/GroupChatDashboard";
@@ -68,7 +68,7 @@ const App = () => {
             <Stack.Screen name="UserProfile" component={UserProfile} />
             <Stack.Screen name="SelectProfile" component={SelectProfileScreen} />
             <Stack.Screen name="SettingsPage" component={SettingsPage} />
-            <Stack.Screen name="AllUserList" component={AllUserList} />
+            <Stack.Screen name="AllUserList" component={AllUserListScreen} />
             <Stack.Screen name="AllGroups" component={AllGroupsscreen} />
             <Stack.Screen name="GroupProfile" component={GroupProfile} />
             <Stack.Screen
@@ -94,7 +94,5 @@ export default App;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: Platform.OS === "ios" ? 20 : 10,
-    paddingBottom: Platform.OS === "ios" ? 15 : 5
   }
 });

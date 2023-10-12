@@ -1,88 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Button } from 'react-native';
-import { AntDesign, FontAwesome } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
+import { AntDesign } from '@expo/vector-icons';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottomNavBar from '../navigation/BottomNavBar';
-
+import { useSelector, useDispatch } from "react-redux";
+import { memoizedgroupList } from "../selectors";
+import { fetchGroupList } from "../reducers/groupListSlice";
 const Stack = createNativeStackNavigator();
 
-const AllGroupsScreen = () => {
-  const navigation = useNavigation();
-
-  const [groupList, setGroupList] = useState([]);
+const AllGroupsScreen = ({ route, navigation }) => {
+  const dispatch = useDispatch();
+  const club = route.params.club;
+  const toggleState = route.params.toggleState;
+  const AsUser = route.params.AsUser;
+  const groupList = useSelector(memoizedgroupList);
+  const loading = useSelector((state) => state.groupList.loading);
 
   useEffect(() => {
-    const fetchedGroups = [
-      {
-        id: '1',
-        name: 'Group 1',
-        selected: false,
-        members: 4,
-      },
-      {
-        id: '2',
-        name: 'Group 2',
-        selected: false,
-        members: 3,
-      },
-      {
-        id: '3',
-        name: 'Group 3',
-        selected: false,
-        members: 15,
-      },
-      {
-        id: '4',
-        name: 'Group 4',
-        selected: false,
-        members: 10,
-      },
-      {
-        id: '5',
-        name: 'Group 5',
-        selected: false,
-        members: 8,
-      },
-      {
-        id: '6',
-        name: 'Group 6',
-        selected: false,
-        members: 9,
-      },
-      // Add more groups here
-    ];
+    const fetchData = async () => {
+      try {
+          dispatch(fetchGroupList(club?.post_id));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
 
-    setGroupList(fetchedGroups);
-  }, []);
+    fetchData();
+  }, [dispatch, navigation, AsUser]);
 
-  const toggleGroupSelection = (groupId) => {
-    setGroupList((prevList) =>
-      prevList.map((group) =>
-        group.id === groupId
-          ? { ...group, selected: !group.selected }
-          : { ...group, selected: false } // Deselect all other groups
-      )
-    );
-  };
-
-  const renderRadio = (groupId) => (
-    <TouchableOpacity
-      style={styles.radio}
-      onPress={() => toggleGroupSelection(groupId)}
-    >
-      {groupList.find((group) => group.id === groupId).selected ? (
-        <AntDesign name="checkcircle" size={20} color="#00c0ff" />
-      ) : (
-        <FontAwesome name="circle-thin" size={20} color="#00c0ff" />
-      )}
-    </TouchableOpacity>
-  );
-
-  const createGroup = () => {
-    // Handle creating a new group here
-    // You can navigate to a new screen or show a modal for creating a group
-  };
 
   return (
     <View style={styles.container}>
@@ -93,9 +38,16 @@ const AllGroupsScreen = () => {
         >
           <AntDesign name="arrowleft" size={24} color="#000" />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Add Group</Text>
+        <View style={styles.headerTextView}>
+          <Text style={styles.headerText}>Add a team chat contact group</Text>
+          {club?.post_title ? <Text style={styles.headerSubText}>{club?.post_title}</Text>: null}
+        </View>
       </View>
-      <FlatList
+      {loading ? (
+        <View style={styles.containerLoader}>
+          <ActivityIndicator size="large" color="#000" />
+        </View>
+      ) : (<FlatList
         data={groupList}
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.groupItem}>
@@ -104,21 +56,20 @@ const AllGroupsScreen = () => {
                 {item.name}
               </Text>
               <Text style={styles.membersCount}>
-                {item.members} members
+                {item.member_count} members
               </Text>
             </View>
-            {renderRadio(item.id)}
           </TouchableOpacity>
         )}
         keyExtractor={(item) => item.id}
-      />
-      <Button
+      />)}
+      {/*<Button
         title="Create Group"
         onPress={createGroup}
         color="#00c0ff" // Set the button's background color
         style={styles.createGroupButton} // Apply custom styles
-      />
-      <BottomNavBar />
+      />*/}
+      <BottomNavBar toggleState={toggleState} club={club} AsUser={AsUser}/>
     </View>
   );
 };
@@ -151,7 +102,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingTop: 25,
+    paddingTop: Platform.OS == 'ios' ? 40 : 20,
     paddingBottom: 25,
     borderBottomWidth: 1,
     borderBottomColor: '#efefef',
@@ -162,6 +113,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  headerSubText: {
+    color: '#000',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  headerTextView: {
+    flex: 1
+  },
   backButton: {
     marginRight: 10,
   },
@@ -169,6 +128,11 @@ const styles = StyleSheet.create({
     marginTop: 16,
     padding: 16,
     fontSize: 16,
+  },
+  containerLoader: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

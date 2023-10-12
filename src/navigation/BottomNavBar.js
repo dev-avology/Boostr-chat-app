@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -6,17 +6,22 @@ import {
   TextInput,
   Platform,
   Text,
+  StatusBar,
   Dimensions,
-} from 'react-native';
-import { AntDesign, FontAwesome, MaterialIcons } from '@expo/vector-icons';
-import { useNavigation, useIsFocused, useRoute } from '@react-navigation/native';
-import * as Animatable from 'react-native-animatable';
+} from "react-native";
+import { AntDesign, FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import {
+  useNavigation,
+  useIsFocused,
+  useRoute,
+} from "@react-navigation/native";
+import * as Animatable from "react-native-animatable";
 
-const BottomNavBar = ({ onSearch }) => {
+const BottomNavBar = ({ onSearch, toggleState, club, AsUser }) => {
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false);
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
-  const [activeItem, setActiveItem] = useState('Home');
+  const [activeItem, setActiveItem] = useState("Home");
 
   const isFocused = useIsFocused();
   const route = useRoute(); // Get the current route
@@ -30,7 +35,7 @@ const BottomNavBar = ({ onSearch }) => {
 
   const handleSearch = () => {
     onSearch(searchText);
-    setSearchText('');
+    setSearchText("");
   };
 
   useEffect(() => {
@@ -38,48 +43,54 @@ const BottomNavBar = ({ onSearch }) => {
     const currentRouteName = route.name;
 
     switch (currentRouteName) {
-      case 'ClubList':
-        setActiveItem('ClubList');
+      case "ClubList":
+        setActiveItem("ClubList");
         break;
-      case 'SettingsPage':
-        setActiveItem('SettingsPage');
+      case "SettingsPage":
+        setActiveItem("SettingsPage");
         break;
-      case 'UserProfile':
-        setActiveItem('UserProfile');
+      case "UserProfile":
+        setActiveItem("UserProfile");
         break;
-      case 'AllUserList':
-        setActiveItem('AllUserList');
+      case "AllUserList":
+        setActiveItem("AllUserList");
         break;
-      case 'AllGroups':
-        setActiveItem('AllGroups');
+      case "AllGroups":
+        setActiveItem("AllGroups");
         break;
       default:
-        setActiveItem('Home');
+        setActiveItem("Home");
         break;
     }
   }, [isFocused, route]);
 
   const handleClub = () => {
-    navigation.navigate('ClubList');
+    navigation.navigate("ClubList");
   };
 
   const handleSetting = () => {
-    navigation.navigate('SettingsPage');
+    navigation.navigate("SettingsPage");
   };
 
   const handleProfile = () => {
-    navigation.navigate('UserProfile');
+    navigation.navigate("UserProfile");
   };
 
   const handleAddContact = () => {
-    navigation.navigate('AllUserList');
+    setIsOverlayVisible(false);
+    navigation.navigate("AllUserList", { toggleState, club, AsUser });
   };
 
   const handleCreateGroup = () => {
-    navigation.navigate('AllGroups');
+    setIsOverlayVisible(false);
+    navigation.navigate("AllGroups", { club, AsUser });
   };
 
-  const windowHeight = Dimensions.get('window').height;
+  const closeOverlay = () => {
+    setIsOverlayVisible(false);
+  };
+
+  const windowHeight = Dimensions.get("window").height;
 
   return (
     <Animatable.View style={styles.container} animation="slideInUp">
@@ -87,26 +98,26 @@ const BottomNavBar = ({ onSearch }) => {
         <TouchableOpacity
           style={[
             styles.iconButton,
-            activeItem === 'ClubList' && styles.activeNavItem,
+            activeItem === "ClubList" && styles.activeNavItem,
           ]}
           onPress={handleClub}
         >
           <FontAwesome
             name="comment"
             size={24}
-            color={activeItem === 'ClubList' ? '#00c0ff' : '#000'}
+            color={activeItem === "ClubList" ? "#00c0ff" : "#000"}
           />
         </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.iconButton,
-            activeItem === 'Search' && styles.activeNavItem,
+            activeItem === "Search" && styles.activeNavItem,
           ]}
         >
           <FontAwesome
             name="search"
             size={24}
-            color={activeItem === 'Search' ? '#00c0ff' : '#000'}
+            color={activeItem === "Search" ? "#00c0ff" : "#000"}
             onPress={toggleSearchBar}
           />
         </TouchableOpacity>
@@ -114,40 +125,46 @@ const BottomNavBar = ({ onSearch }) => {
           style={[
             styles.iconButton,
             styles.middleButton,
-            activeItem === 'AddContact' && styles.activeNavItem,
+            activeItem === "AddContact" && styles.activeNavItem,
           ]}
-          onPress={() => setIsOverlayVisible(!isOverlayVisible)}
+          onPress={() => {
+            if (!club) {
+              alert("Please select a club first.");
+            } else {
+              setIsOverlayVisible(!isOverlayVisible);
+            }
+          }}
         >
           <AntDesign
             name="plus"
             size={24}
-            color={activeItem === 'AddContact' ? '#00c0ff' : '#fff'}
+            color={activeItem === "AddContact" ? "#00c0ff" : "#fff"}
           />
         </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.iconButton,
-            activeItem === 'SettingsPage' && styles.activeNavItem,
+            activeItem === "SettingsPage" && styles.activeNavItem,
           ]}
           onPress={handleSetting}
         >
           <MaterialIcons
             name="settings"
             size={24}
-            color={activeItem === 'SettingsPage' ? '#00c0ff' : '#000'}
+            color={activeItem === "SettingsPage" ? "#00c0ff" : "#000"}
           />
         </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.iconButton,
-            activeItem === 'UserProfile' && styles.activeNavItem,
+            activeItem === "UserProfile" && styles.activeNavItem,
           ]}
           onPress={handleProfile}
         >
           <FontAwesome
             name="user"
             size={24}
-            color={activeItem === 'UserProfile' ? '#00c0ff' : '#000'}
+            color={activeItem === "UserProfile" ? "#00c0ff" : "#000"}
           />
         </TouchableOpacity>
       </View>
@@ -164,7 +181,7 @@ const BottomNavBar = ({ onSearch }) => {
             <FontAwesome
               name="search"
               size={20}
-              color={activeItem === 'Search' ? '#00c0ff' : '#000'}
+              color={activeItem === "Search" ? "#00c0ff" : "#000"}
             />
           </TouchableOpacity>
         </View>
@@ -174,12 +191,12 @@ const BottomNavBar = ({ onSearch }) => {
           style={[
             styles.overlay,
             {
-              height: windowHeight / 2,
               opacity: 1,
             },
           ]}
-          duration={300}
-          easing="ease-out"
+          animation="fadeIn"
+          duration={500}
+          easing="ease-in-out"
         >
           <Text style={styles.headingTexts}>Add User or Club</Text>
           <TouchableOpacity
@@ -188,13 +205,27 @@ const BottomNavBar = ({ onSearch }) => {
           >
             <Text style={styles.buttonTexts}>Add Contact</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.overlayButton}
-            onPress={handleCreateGroup}
-          >
-            <Text style={styles.buttonTexts}>Create Group</Text>
-          </TouchableOpacity>
+          {toggleState ? null : (
+            <TouchableOpacity
+              style={styles.overlayButton}
+              onPress={handleCreateGroup}
+            >
+              <Text style={styles.buttonTexts}>Create Group</Text>
+            </TouchableOpacity>
+          )}
         </Animatable.View>
+      )}
+      {isOverlayVisible && (
+        <TouchableOpacity
+        style={[
+            styles.transparentOverlay,
+            {
+              height: windowHeight,
+              opacity: 1,
+            },
+          ]}
+          onPress={closeOverlay}
+        />
       )}
     </Animatable.View>
   );
@@ -202,9 +233,10 @@ const BottomNavBar = ({ onSearch }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
+    paddingBottom: Platform.OS === "ios" ? 15 : 5,
     borderTopWidth: 1,
-    borderTopColor: '#efefef',
+    borderTopColor: "#efefef",
     ...Platform.select({
       ios: {
         shadowColor: "#000",
@@ -217,12 +249,25 @@ const styles = StyleSheet.create({
       },
     }),
   },
+  transparentOverlay: {
+    position: "absolute",
+    bottom:0,
+    backgroundColor:'rgba(0,0,0,0.1)',
+    left: 0,
+    right: 0,
+    padding: 0,
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   iconContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 8,
+    zIndex:9,
+    backgroundColor:'#fff'
   },
   iconButton: {
     padding: 8,
@@ -230,17 +275,17 @@ const styles = StyleSheet.create({
   middleButton: {
     width: 80,
     height: 50,
-    backgroundColor: '#00c0ff',
+    backgroundColor: "#00c0ff",
     borderRadius: 6,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   searchBarContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
     borderWidth: 1,
-    borderColor: '#efefef',
+    borderColor: "#efefef",
     borderRadius: 25,
     paddingHorizontal: 10,
     marginTop: 8,
@@ -257,41 +302,42 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   overlay: {
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 68,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 66,
     left: 0,
     right: 0,
-    backgroundColor: '#f1f1f1',
+    backgroundColor: "#fff",
     padding: 22,
-    borderTopWidth: 1,
-    borderTopColor: '#efefef',
+    borderBottomWidth: 1,
+    borderBottomColor: "#efefef",
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex:9
   },
   overlayButton: {
-    width: '100%',
+    width: "100%",
     marginTop: 15,
     borderWidth: 2,
-    borderColor: '#00c0ff',
+    borderColor: "#00c0ff",
     padding: 12,
     borderRadius: 6,
-    backgroundColor: '#00c0ff',
-    textTransform: 'uppercase',
-    color: '#fff',
-    textAlign: 'center',
+    backgroundColor: "#00c0ff",
+    textTransform: "uppercase",
+    color: "#fff",
+    textAlign: "center",
   },
   buttonTexts: {
-    textAlign: 'center',
-    color: '#fff',
+    textAlign: "center",
+    color: "#fff",
     fontSize: 16,
   },
   headingTexts: {
-    color: '#000',
+    color: "#000",
     fontSize: 18,
-    fontWeight: '800',
-    marginBottom: 15,
+    fontWeight: "700",
+    marginBottom: 10,
   },
 });
 
