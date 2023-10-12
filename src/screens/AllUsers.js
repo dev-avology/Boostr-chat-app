@@ -15,6 +15,7 @@ import BottomNavBar from "../navigation/BottomNavBar";
 import {
   fetchUserContactList,
   fetchClubContactList,
+  createChatConversation
 } from "../reducers/contactListSlice";
 import { memoizedcontactList } from "../selectors";
 import userPlaceholder from '../assets/user1.png';
@@ -68,6 +69,34 @@ const AllUserListScreen = ({ route, navigation }) => {
       ]}
     />
   );
+  
+  const createConversation = (user_id, club_id) => {
+    let payload = {};
+    if (toggleState) {
+      payload = {
+        users: [user_id],
+        user_id: AsUser,
+        role: 'member',
+        club_id: club_id,
+        conversation_type: 'one-to-one'
+      };
+    }else{
+      payload = {
+        users: [user_id],
+        user_id: AsUser,
+        role: 'club',
+        club_id: club_id,
+        conversation_type: 'one-to-one'
+      }
+    }
+    dispatch(createChatConversation(payload)).then((data) => {
+      const conversation =  data?.data;
+      navigation.navigate("ChatDashboard", {conversation, AsUser, toggleState });
+    })
+    .catch((error) => {
+      console.log(error);
+    });;
+  };
 
   return (
     <View style={styles.container}>
@@ -88,7 +117,7 @@ const AllUserListScreen = ({ route, navigation }) => {
         <FlatList
           data={contactList}
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.userItem}>
+            <TouchableOpacity style={styles.userItem} onPress={() => createConversation(item?.user_id, club?.post_id)}>
               {item ? (
                 <>
                   <View style={styles.statusContainer}>

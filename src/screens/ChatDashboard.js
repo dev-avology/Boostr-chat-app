@@ -43,17 +43,17 @@ const ChatDashboard = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const conversation = route.params.conversation;
-  const asUser = route.params.asUser;
+  const AsUser = route.params.AsUser;
   const user = conversation?.participants.find(
-    (participant) => participant.user_id != asUser
+    (participant) => participant.user_id != AsUser
   );
   const recipient_ids = conversation?.participants.map((item) => item.user_id);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (asUser) {
-          dispatch(fetchUserMessages(conversation?.id, asUser));
+        if (AsUser) {
+          dispatch(fetchUserMessages(conversation?.id, AsUser));
         }
       } catch (error) {
         //console.error("Error fetching data:", error);
@@ -62,8 +62,8 @@ const ChatDashboard = ({ route, navigation }) => {
     };
     const autofetchData = async () => {
       try {
-        if (asUser) {
-          dispatch(autofetchUserMessages(conversation?.id, asUser));
+        if (AsUser) {
+          dispatch(autofetchUserMessages(conversation?.id, AsUser));
         }
       } catch (error) {
         //console.error("Error fetching data:", error);
@@ -80,7 +80,7 @@ const ChatDashboard = ({ route, navigation }) => {
     return () => {
       clearInterval(refreshInterval);
     };
-  }, [dispatch, navigation, asUser, conversation]);
+  }, [dispatch, navigation, AsUser, conversation]);
   useEffect(() => {
     const backAction = () => {
       navigation.goBack();
@@ -103,7 +103,7 @@ const ChatDashboard = ({ route, navigation }) => {
     setIsLoading(true);
     const newMessage = {
       content: messageText,
-      sender_id: asUser,
+      sender_id: AsUser,
       conversation_id: conversation?.id,
       message_type: "text",
       recipient_ids: recipient_ids,
@@ -232,7 +232,7 @@ const ChatDashboard = ({ route, navigation }) => {
                 <View
                   style={{
                     alignSelf:
-                      item.sender_id == asUser ? "flex-end" : "flex-start",
+                      item.sender_id == AsUser ? "flex-end" : "flex-start",
                     marginBottom: 5,
                   }}
                 >
@@ -241,9 +241,9 @@ const ChatDashboard = ({ route, navigation }) => {
                       styles.message,
                       {
                         alignSelf:
-                          item.sender_id == asUser ? "flex-end" : "flex-start",
+                          item.sender_id == AsUser ? "flex-end" : "flex-start",
                         backgroundColor:
-                          item.sender_id == asUser ? "#00c0ff" : "#fff",
+                          item.sender_id == AsUser ? "#00c0ff" : "#fff",
                       },
                     ]}
                   >
@@ -251,14 +251,14 @@ const ChatDashboard = ({ route, navigation }) => {
                       style={[
                         styles.messageText,
                         {
-                          color: item.sender_id == asUser ? "#fff" : "#333",
+                          color: item.sender_id == AsUser ? "#fff" : "#333",
                         },
                       ]}
                     >
                       {item.content}
                     </Text>
                   </View>
-                  {item.sender_id != asUser ? (
+                  {item.sender_id != AsUser ? (
                     <Image
                       source={{ uri: item?.user_photo }}
                       style={styles.userProfileImage}

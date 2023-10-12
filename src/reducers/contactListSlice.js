@@ -68,4 +68,13 @@ export const fetchUserContactList = (club_id, user_id) => async (dispatch) => {
   }
 };
 
+export const createChatConversation = (payload) => async () => {
+    try {
+      const response = await axios.post(`${CHAT_API_URL}/chat_custom_create_conversation`, payload);
+      return response.data;
+    } catch (error) {
+      return error.response.data;
+    }
+  };
+
 export default contactSlice.reducer;

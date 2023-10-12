@@ -39,7 +39,7 @@ const UsersListScreen = ({
               <TouchableOpacity
                 style={styles.userItem}
                 onPress={() => handleUserClick(item, userID)}
-                key={i}
+                key={participant?.user_id}
               >
                 <View style={styles.statusContainer}>
                   {participant?.user_photo ? <Image
@@ -73,7 +73,7 @@ const UsersListScreen = ({
             ) : null
           )
         }
-        keyExtractor={(item) => item?.club_id}
+        keyExtractor={(item) => item?.id}
       />
     </View>
   );
@@ -179,8 +179,8 @@ const ChatUserLists = ({ route, navigation }) => {
     />
   );
 
-  const handleUserClick = (conversation, asUser) => {
-    navigation.navigate("ChatDashboard", { conversation, asUser, toggleState });
+  const handleUserClick = (conversation, AsUser) => {
+    navigation.navigate("ChatDashboard", { conversation, AsUser, toggleState });
   };
 
   const toggleShuffle = () => {
