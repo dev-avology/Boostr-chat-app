@@ -1,21 +1,19 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { CHAT_API_URL } from '../config';
+import { CHAT_API_URL } from "../config";
 const logIn = async (user) => {
   try {
-    // Dispatch the login action to indicate the login process has started
-    const response = await axios.post(
-      `${CHAT_API_URL}/login`,
-      {
-        username: user.username, // Replace with the actual email value
-        password: user.password, // Replace with the actual password value
-      }
-    );
+    const response = await axios.post(`${CHAT_API_URL}/login`, {
+      username: user.username,
+      password: user.password,
+    });
     if (response && response.data) {
       const userdata = response.data;
       if (userdata && userdata !== null && userdata?.user_id) {
-        // Store user data in AsyncStorage
-        await AsyncStorage.setItem("user_id", JSON.stringify(userdata?.user_id));
+        await AsyncStorage.setItem(
+          "user_id",
+          JSON.stringify(userdata?.user_id)
+        );
         return {
           status: "success",
           message: "You are redirecting to the home page",
@@ -30,7 +28,7 @@ const logIn = async (user) => {
       alert("Login failed. Please try again later.");
     }
   } catch (error) {
-    errormsg = error.response ? error.response.data.message : error.message
+    errormsg = error.response ? error.response.data.message : error.message;
     alert(errormsg);
   } finally {
   }

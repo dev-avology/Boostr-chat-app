@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground, ScrollView } from 'react-native';
 import user1Img from '../assets/user1.png';
 import bgImg from '../assets/chat-bg.png';
-import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import BottomNavBar from '../navigation/BottomNavBar';
 

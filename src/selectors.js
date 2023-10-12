@@ -4,14 +4,14 @@ const selectJsonData = (state) => {
   try {
     return JSON.parse(state);
   } catch (error) {
-    // Handle JSON parsing error if necessary
     return null;
   }
 };
 
 const selectUserData = (state) => selectJsonData(state.auth.userData) || [];
 const SelectclubList = (state) => selectJsonData(state.clubList.clubs) || [];
-const SelectConversations = (state) => selectJsonData(state.conversations.conversations) || [];
+const SelectConversations = (state) =>
+  selectJsonData(state.conversations.conversations) || [];
 const SelectuserMessages = (state) => state.userMessages.messages || [];
 const SelectcontactList = (state) => state.contactList.contacts || [];
 const SelectgroupList = (state) => state.groupList.groups || [];

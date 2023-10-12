@@ -21,7 +21,7 @@ import GroupChatDashboard from "./src/screens/GroupChatDashboard";
 import { fetchUserData } from "./src/reducers/loginReducer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ActivityIndicator } from "react-native-paper";
-import { View, StyleSheet, StatusBar } from 'react-native';
+import { View, StyleSheet, StatusBar } from "react-native";
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -41,18 +41,19 @@ const App = () => {
     };
 
     fetchData(); // Call the async function
-
   }, [dispatch]);
-  if(loading && !isLoggedIn)
-  return (
-    <View style={{
-      flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
-    }}>
-      <ActivityIndicator size="large" color="#000" />
-    </View>
-  );
+  if (loading && !isLoggedIn)
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <ActivityIndicator size="large" color="#000" />
+      </View>
+    );
   return (
     <SafeAreaProvider style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -66,7 +67,10 @@ const App = () => {
             <Stack.Screen name="ChatUserLists" component={ChatUserLists} />
             <Stack.Screen name="ChatDashboard" component={ChatDashboard} />
             <Stack.Screen name="UserProfile" component={UserProfile} />
-            <Stack.Screen name="SelectProfile" component={SelectProfileScreen} />
+            <Stack.Screen
+              name="SelectProfile"
+              component={SelectProfileScreen}
+            />
             <Stack.Screen name="SettingsPage" component={SettingsPage} />
             <Stack.Screen name="AllUserList" component={AllUserListScreen} />
             <Stack.Screen name="AllGroups" component={AllGroupsscreen} />
@@ -90,9 +94,8 @@ const App = () => {
 
 export default App;
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  }
+  },
 });

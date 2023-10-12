@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import {
   View,
   Text,
@@ -9,13 +8,11 @@ import {
   SectionList,
   ActivityIndicator,
 } from "react-native";
-import { AntDesign, FontAwesome } from "@expo/vector-icons"; // Import icons
 import BottomNavBar from "../navigation/BottomNavBar";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fetchClubList } from "../reducers/clubListSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { memoizedSelectclubList } from '../selectors';
-import { useFocusEffect } from '@react-navigation/native';
+import { memoizedSelectclubList } from "../selectors";
+import { useFocusEffect } from "@react-navigation/native";
 
 const ClubList = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -29,7 +26,7 @@ const ClubList = ({ navigation }) => {
 
   const closeSearchBar = () => {
     setIsSearchBarVisible(false);
-    setSearchText(""); // Clear the search input text
+    setSearchText("");
   };
 
   const renderItem = ({ item }) => (
@@ -38,12 +35,9 @@ const ClubList = ({ navigation }) => {
       onPress={() => handleClubClick(item)}
     >
       <View style={styles.clubImageContainer}>
-      {item?.user_photo && typeof item.user_photo === 'string' && (
-        <Image
-          source={{ uri: item.user_photo }}
-          style={styles.clubImage}
-        />
-      )}
+        {item?.user_photo && typeof item.user_photo === "string" && (
+          <Image source={{ uri: item.user_photo }} style={styles.clubImage} />
+        )}
       </View>
       <View style={styles.clubInfo}>
         <Text style={styles.clubName}>{item?.post_title}</Text>
@@ -51,11 +45,12 @@ const ClubList = ({ navigation }) => {
     </TouchableOpacity>
   );
 
-  const CurrentUserID = useSelector((state) => JSON.parse(state.auth.userData)?.user_id);
+  const CurrentUserID = useSelector(
+    (state) => JSON.parse(state.auth.userData)?.user_id
+  );
   const clubList = useSelector(memoizedSelectclubList);
   const loading = useSelector((state) => state.clubList.loading);
   const error = useSelector((state) => state.clubList.error);
-
 
   useFocusEffect(
     React.useCallback(() => {
@@ -68,22 +63,22 @@ const ClubList = ({ navigation }) => {
           console.error("Error fetching data:", error);
         }
       };
-  
+
       fetchData();
     }, [])
   );
 
-   useEffect(() => {
+  useEffect(() => {
     if (!loading && !error) {
       try {
-          const parsedClubList = clubList;
-          if (parsedClubList && Array.isArray(parsedClubList.clubs)) {
-            setClubs(parsedClubList?.clubs);
-          } else {
-            setClubs([]);
-          }
+        const parsedClubList = clubList;
+        if (parsedClubList && Array.isArray(parsedClubList.clubs)) {
+          setClubs(parsedClubList?.clubs);
+        } else {
+          setClubs([]);
+        }
       } catch (parseError) {
-        console.error('Error parsing clubList:', parseError);
+        console.error("Error parsing clubList:", parseError);
         setClubs([]);
       }
     } else {
@@ -95,9 +90,7 @@ const ClubList = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <Text style={styles.headerText}>
-            Select a Club
-          </Text>
+          <Text style={styles.headerText}>Select a Club</Text>
           <Text style={styles.wrapText}>
             Choose a club you support or manage to join a chat.
           </Text>
@@ -110,21 +103,21 @@ const ClubList = ({ navigation }) => {
       {isSearchBarVisible && <View style={styles.searchBarSpace} />}
       <View style={styles.clubListContainer}>
         {loading ? (
-            <View style={styles.containerLoader}>
-              <ActivityIndicator size="large" color="#000" />
-            </View>
-          ) : clubs.length > 0 ? (
-            <SectionList
-              sections={[
-                {
-                  data: clubs,
-                },
-              ]}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.post_id}
-            />
-          ) : (
-            <Text style={styles.notFound}>No clubs found.</Text>
+          <View style={styles.containerLoader}>
+            <ActivityIndicator size="large" color="#000" />
+          </View>
+        ) : clubs.length > 0 ? (
+          <SectionList
+            sections={[
+              {
+                data: clubs,
+              },
+            ]}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.post_id}
+          />
+        ) : (
+          <Text style={styles.notFound}>No clubs found.</Text>
         )}
       </View>
       <BottomNavBar />
@@ -149,14 +142,14 @@ const styles = StyleSheet.create({
   },
   wrapText: {
     fontSize: 14,
-    marginTop:3,
+    marginTop: 3,
     color: "#777",
   },
   clubImageContainer: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    overflow: "hidden", // Clip club image to the border radius
+    overflow: "hidden",
   },
   clubImage: {
     width: "100%",
@@ -181,7 +174,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 16,
-    paddingTop: Platform.OS == 'ios' ? 40 : 20,
+    paddingTop: Platform.OS == "ios" ? 40 : 20,
     paddingBottom: 25,
     borderBottomWidth: 1,
     borderBottomColor: "#efefef",
@@ -200,7 +193,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   iconButton: {
-    marginLeft: 10, // Add margin between the icons
+    marginLeft: 10,
   },
   searchBarContainer: {
     flexDirection: "row",
@@ -213,23 +206,23 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   searchBarSpace: {
-    height: 10, // Adjust the height to create space for the search bar
+    height: 10,
   },
   searchInput: {
     flex: 1,
     height: 40,
     paddingVertical: 0,
   },
-  notFound:{
-    textAlign:'center',
-    fontSize:20,
-    padding:20,
+  notFound: {
+    textAlign: "center",
+    fontSize: 20,
+    padding: 20,
   },
-  containerLoader:{
-    flex:1,
+  containerLoader: {
+    flex: 1,
     alignItems: "center",
-    justifyContent:"center"
-  }
+    justifyContent: "center",
+  },
 });
 
 export default ClubList;
