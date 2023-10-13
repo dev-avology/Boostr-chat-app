@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
+  Dimensions,
   View,
   Text,
   StyleSheet,
@@ -27,6 +28,11 @@ import {
 } from "../reducers/chatMessagesSlice";
 import * as ImagePicker from "expo-image-picker";
 import profileManager from "../assets/pm.png";
+import Lightbox from "react-native-lightbox-v2";
+import { Video, ResizeMode } from "expo-av";
+
+const WINDOW_WIDTH = Dimensions.get("window").width;
+const BASE_PADDING = 10;
 
 const YOUR_REFRESH_INTERVAL = 5000;
 
@@ -246,16 +252,54 @@ const ChatDashboard = ({ route, navigation }) => {
                       },
                     ]}
                   >
-                    <Text
-                      style={[
-                        styles.messageText,
-                        {
-                          color: item.sender_id == AsUser ? "#fff" : "#333",
-                        },
-                      ]}
-                    >
-                      {item.content}
-                    </Text>
+                    {item.message_type === "text" && (
+                      <Text
+                        style={[
+                          styles.messageText,
+                          {
+                            color: item.sender_id === AsUser ? "#fff" : "#333",
+                          },
+                        ]}
+                      >
+                        {item.content}
+                      </Text>
+                    )}
+
+                    {item.message_type === "image" && (
+                      <Lightbox
+                        underlayColor="white"
+                        renderContent={() => (
+                          <Image
+                            source={{ uri: item.media_url }}
+                            style={styles.lightboximageStyle}
+                          />
+                        )}
+                      >
+                        <Image
+                          source={{ uri: item.media_url }}
+                          style={styles.imageStyle}
+                        />
+                      </Lightbox>
+                    )}
+
+                    {item.message_type === "video" && (
+                      <Lightbox underlayColor="white"  renderContent={() => (
+                          <Video
+                            source={{ uri: item.media_url }}
+                            style={styles.lightboximageStyle}
+                            resizeMode="contain"
+                            useNativeControls
+                            autoplay={true}
+                          />
+                        )}>
+                        <Video
+                          useNativeControls={false}
+                          style={styles.videoPlayer}
+                          source={{ uri: item.media_url }}
+                          resizeMode="contain"
+                        />
+                      </Lightbox>
+                    )}
                   </View>
                   {item.sender_id != AsUser ? (
                     <>
@@ -426,6 +470,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     justifyContent: "center",
     alignItems: "center",
+  },
+  imageStyle: {
+    width: 200,
+    height: 150,
+    objectFit: "contain",
+  },
+  lightboximageStyle: {
+    height: "100%",
+    width: "100%",
+  },
+  videoPlayer: {
+    width: 300, // Set the width of the video player as needed
+    height: 200, // Set the height of the video player as needed
   },
 });
 
