@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -12,11 +12,14 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import BottomNavBar from "../navigation/BottomNavBar";
 import { useSelector, useDispatch } from "react-redux";
 import { memoizedgroupList } from "../selectors";
-import { fetchGroupList } from "../reducers/groupListSlice";
-const Stack = createNativeStackNavigator();
+import {
+  fetchGroupList,
+  createGroupConversation,
+} from "../reducers/groupListSlice";
 
 const AllGroupsScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
   const club = route.params.club;
   const toggleState = route.params.toggleState;
   const AsUser = route.params.AsUser;
@@ -35,6 +38,29 @@ const AllGroupsScreen = ({ route, navigation }) => {
     fetchData();
   }, [dispatch, navigation, AsUser]);
 
+  const createConversation = (group_id, group_name) => {
+    setIsLoading(true);
+    let payload = {
+      user_id: AsUser,
+      group_id: group_id,
+      group_name: group_name,
+    };
+    dispatch(createGroupConversation(payload))
+      .then((data) => {
+        const conversation = data?.data;
+        navigation.navigate("ChatDashboard", {
+          conversation,
+          AsUser,
+          toggleState,
+        });
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -51,7 +77,7 @@ const AllGroupsScreen = ({ route, navigation }) => {
           ) : null}
         </View>
       </View>
-      {loading ? (
+      {loading || isLoading ? (
         <View style={styles.containerLoader}>
           <ActivityIndicator size="large" color="#000" />
         </View>
@@ -59,7 +85,7 @@ const AllGroupsScreen = ({ route, navigation }) => {
         <FlatList
           data={groupList}
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.groupItem}>
+            <TouchableOpacity style={styles.groupItem} onPress={() => createConversation(item?.id, item?.name)}>
               <View style={styles.groupInfo}>
                 <Text style={styles.groupName}>{item.name}</Text>
                 <Text style={styles.membersCount}>

@@ -51,4 +51,14 @@ export const fetchGroupList = (club_id) => async (dispatch) => {
   }
 };
 
+
+export const createGroupConversation = (payload) => async () => {
+  try {
+    const response = await axios.post(`${CHAT_API_URL}/chat_create_group_conversation`, payload);
+    return response.data;
+  } catch (error) {
+    return error.response.data;
+  }
+};
+
 export default groupSlice.reducer;
