@@ -25,6 +25,7 @@ import {
   autofetchUserMessages,
   sendMessage,
   addMessage,
+  sendFileMessage
 } from "../reducers/chatMessagesSlice";
 import * as ImagePicker from "expo-image-picker";
 import profileManager from "../assets/pm.png";
@@ -49,6 +50,7 @@ const ChatDashboard = ({ route, navigation }) => {
   const conversation = route.params.conversation;
   const AsUser = route.params.AsUser;
   const toggleState = route.params.toggleState;
+  const club = route.params.club;
   const user = conversation?.participants.find(
     (participant) => participant.user_id != AsUser
   );
@@ -131,7 +133,13 @@ const ChatDashboard = ({ route, navigation }) => {
   };
 
   const goToUserProfile = () => {
-    navigation.navigate("UserProfile", { conversation, user, AsUser, toggleState });
+    navigation.navigate("UserProfile", {
+      conversation,
+      user,
+      AsUser,
+      toggleState,
+      club,
+    });
   };
 
   const pickImage = async () => {
@@ -139,10 +147,38 @@ const ChatDashboard = ({ route, navigation }) => {
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       CameraType: "Back",
-      aspect: [4, 3],
       quality: 0.5,
     });
+
     if (!result?.canceled) {
+      setIsLoading(true);
+      const newMessage = new FormData();
+
+      newMessage.append('file', {
+        uri: result?.assets[0]?.uri,
+        type: result?.assets[0]?.type,
+        name: result?.assets[0]?.fileName,
+      });
+
+      newMessage.append("sender_id", AsUser);
+      newMessage.append("conversation_id", conversation?.id || "");
+      newMessage.append("message_type", result?.assets[0]?.type);
+      newMessage.append("recipient_ids", recipient_ids);
+      newMessage.append("mentioned_user_ids", []);
+      console.log(newMessage);
+    dispatch(sendFileMessage(newMessage))
+      .then((data) => {
+        console.log(data);
+        //dispatch(addMessage(data.data));
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error sending message:", error);
+        setIsLoading(false);
+      });
+
+    flatlistRef.current.scrollToEnd();
+
     }
   };
 

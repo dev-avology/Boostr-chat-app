@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -7,25 +7,34 @@ import {
   TouchableOpacity,
   ImageBackground,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import user1Img from "../assets/user1.png";
 import bgImg from "../assets/chat-bg.png";
 import Icon from "react-native-vector-icons/Ionicons";
 import BottomNavBar from "../navigation/BottomNavBar";
 import profileManager from "../assets/pm.png";
-import { Button } from "react-native-paper";
+import { hideGroupConversation } from "../reducers/groupListSlice";
+import { useDispatch } from "react-redux";
 
 const UserProfile = ({ route, navigation }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
   const user = route.params?.user ? route.params?.user : [];
   const AsUser = route.params?.user ? route.params?.AsUser : null;
+  const club = route.params?.club ? route.params?.club : [];
   //const toggleState = route.params?.user ? route.params?.toggleState : null;
   const conversation = route.params?.conversation
     ? route.params?.conversation
     : [];
 
-    const is_group_admin = conversation?.conversation_type === "group"
-  ? conversation.participants.some((participant) => participant.user_id == AsUser && participant.role == 'club')
-  : false;
+  const is_group_admin =
+    conversation?.conversation_type === "group"
+      ? conversation.participants.some(
+          (participant) =>
+            participant.user_id == AsUser && participant.role == "club"
+        )
+      : false;
 
   const handleBack = () => {
     navigation.goBack();
@@ -40,6 +49,23 @@ const UserProfile = ({ route, navigation }) => {
     navigation.goBack();
     return null;
   }
+
+  const handleRemoveGroup = () => {
+    setIsLoading(true);
+    let payload = {
+      club_id: conversation?.id,
+      group_id: conversation?.contact_group_id,
+    };
+    dispatch(hideGroupConversation(payload))
+      .then((data) => {
+        navigation.navigate("ChatUserLists", { club });
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        //console.log(error);
+        setIsLoading(false);
+      });
+  };
 
   return (
     <ImageBackground style={styles.img_top} source={bgImg} resizeMode="cover">
@@ -104,7 +130,19 @@ const UserProfile = ({ route, navigation }) => {
             ))}
           </ScrollView>
         </View>
-        
+        {is_group_admin ? (
+          <TouchableOpacity
+            onPress={handleRemoveGroup}
+            style={styles.removeButton}
+          >
+            <Text style={styles.removeButtonText}>
+              Remove Group{" "}
+              {isLoading ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : null}
+            </Text>
+          </TouchableOpacity>
+        ) : null}
       </View>
       <BottomNavBar />
     </ImageBackground>
@@ -206,6 +244,20 @@ const styles = StyleSheet.create({
   },
   headerTextView: {
     flex: 1,
+  },
+  removeButton: {
+    backgroundColor: "red",
+    paddingHorizontal: 40,
+    paddingVertical: 12,
+    borderRadius: 3,
+    marginTop: 15,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  removeButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 

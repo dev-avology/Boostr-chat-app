@@ -188,7 +188,7 @@ const ChatUserLists = ({ route, navigation }) => {
   );
 
   const handleUserClick = (conversation, AsUser) => {
-    navigation.navigate("ChatDashboard", { conversation, AsUser, toggleState });
+    navigation.navigate("ChatDashboard", { conversation, AsUser, toggleState, club });
   };
 
   const toggleShuffle = () => {
