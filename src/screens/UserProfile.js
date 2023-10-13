@@ -13,12 +13,19 @@ import bgImg from "../assets/chat-bg.png";
 import Icon from "react-native-vector-icons/Ionicons";
 import BottomNavBar from "../navigation/BottomNavBar";
 import profileManager from "../assets/pm.png";
+import { Button } from "react-native-paper";
 
 const UserProfile = ({ route, navigation }) => {
   const user = route.params?.user ? route.params?.user : [];
+  const AsUser = route.params?.user ? route.params?.AsUser : null;
+  //const toggleState = route.params?.user ? route.params?.toggleState : null;
   const conversation = route.params?.conversation
     ? route.params?.conversation
     : [];
+
+    const is_group_admin = conversation?.conversation_type === "group"
+  ? conversation.participants.some((participant) => participant.user_id == AsUser && participant.role == 'club')
+  : false;
 
   const handleBack = () => {
     navigation.goBack();
@@ -97,6 +104,7 @@ const UserProfile = ({ route, navigation }) => {
             ))}
           </ScrollView>
         </View>
+        
       </View>
       <BottomNavBar />
     </ImageBackground>

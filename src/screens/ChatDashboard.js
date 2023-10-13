@@ -48,6 +48,7 @@ const ChatDashboard = ({ route, navigation }) => {
 
   const conversation = route.params.conversation;
   const AsUser = route.params.AsUser;
+  const toggleState = route.params.toggleState;
   const user = conversation?.participants.find(
     (participant) => participant.user_id != AsUser
   );
@@ -130,7 +131,7 @@ const ChatDashboard = ({ route, navigation }) => {
   };
 
   const goToUserProfile = () => {
-    navigation.navigate("UserProfile", { conversation, user });
+    navigation.navigate("UserProfile", { conversation, user, AsUser, toggleState });
   };
 
   const pickImage = async () => {
@@ -283,7 +284,9 @@ const ChatDashboard = ({ route, navigation }) => {
                     )}
 
                     {item.message_type === "video" && (
-                      <Lightbox underlayColor="white"  renderContent={() => (
+                      <Lightbox
+                        underlayColor="white"
+                        renderContent={() => (
                           <Video
                             source={{ uri: item.media_url }}
                             style={styles.lightboximageStyle}
@@ -291,7 +294,8 @@ const ChatDashboard = ({ route, navigation }) => {
                             useNativeControls
                             autoplay={true}
                           />
-                        )}>
+                        )}
+                      >
                         <Video
                           useNativeControls={false}
                           style={styles.videoPlayer}
@@ -481,8 +485,8 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   videoPlayer: {
-    width: 300, // Set the width of the video player as needed
-    height: 200, // Set the height of the video player as needed
+    width: 200,
+    height: 150,
   },
 });
 
