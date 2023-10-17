@@ -18,6 +18,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import bgImg from "../assets/chat-bg.png";
 import userPlaceholder from "../assets/user1.png";
+import groupPlaceholder from "../assets/group_icons.png";
 import { useDispatch, useSelector } from "react-redux";
 import { memoizedSelectUserData, memoizeduserMessages } from "../selectors";
 import {
@@ -235,7 +236,8 @@ const ChatDashboard = ({ route, navigation }) => {
                   style={styles.userImage}
                 />
               ) : (
-                <Image source={userPlaceholder} style={styles.userImage} />
+                
+                <Image source={conversation?.conversation_type == "group"?groupPlaceholder:userPlaceholder} style={styles.userImage} />
               )}
               {renderStatusIndicator(user?.status)}
             </View>
