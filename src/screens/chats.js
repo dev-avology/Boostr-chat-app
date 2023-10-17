@@ -215,17 +215,18 @@ const ChatUserLists = ({ route, navigation }) => {
             Hello{" "}
             {toggleState
               ? userData?.first_name + " " + userData?.last_name
-              : club?.post_title}
+              : (club?.post_title || '').substring(0, 12)+'...'}
           </Text>
         </View>
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.toggleButton} onPress={toggleShuffle}>
+          <Text style={styles.toggleText}>{"As User"}</Text>
             <FontAwesome
               name={!toggleState ? "toggle-on" : "toggle-off"}
-              size={32}
+              size={18}
               color="#000"
             />
-            <Text style={styles.toggleText}>{renderToggleText()}</Text>
+            <Text style={styles.toggleText}>{"As Club"}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -416,7 +417,7 @@ const styles = StyleSheet.create({
   },
   toggleText: {
     marginHorizontal: 10,
-    fontSize: 15,
+    fontSize: 11,
     fontWeight: "700",
   },
   containerLoader: {

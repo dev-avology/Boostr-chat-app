@@ -8,8 +8,6 @@ import {
   FlatList,
   KeyboardAvoidingView,
   Platform,
-  Dimensions, 
-  Keyboard,
   Image,
   BackHandler,
   ImageBackground,
@@ -33,7 +31,6 @@ import profileManager from "../assets/pm.png";
 const YOUR_REFRESH_INTERVAL = 5000;
 
 const ChatDashboard = ({ route, navigation }) => {
-  const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(Platform.OS === 'ios' ? 64 : 0);
   const [messageText, setMessageText] = useState("");
   const flatlistRef = useRef(null);
   const dispatch = useDispatch();
@@ -78,16 +75,9 @@ const ChatDashboard = ({ route, navigation }) => {
       autofetchData();
     }, YOUR_REFRESH_INTERVAL);
 
-    if (Platform.OS === 'android') {
-      const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
-      const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
-    }
+   
     return () => {
       clearInterval(refreshInterval);
-      if (Platform.OS === 'android') {
-        keyboardDidShowListener.remove();
-        keyboardDidHideListener.remove();
-      }
     };
   }, [dispatch, navigation, AsUser, conversation]);
   useEffect(() => {
@@ -104,21 +94,6 @@ const ChatDashboard = ({ route, navigation }) => {
     return () => backHandler.remove();
   }, []);
 
-
-  const _keyboardDidShow = (event) => {
-    if (Platform.OS === 'android') {
-      const windowHeight = Dimensions.get('window').height;
-      const keyboardHeight = event.endCoordinates.height;
-      const offset = parseInt(windowHeight - keyboardHeight);
-      setKeyboardVerticalOffset(-offset.toString());
-    }
-  };
-
-  const _keyboardDidHide = () => {
-    if (Platform.OS === 'android') {
-      setKeyboardVerticalOffset(0);
-    }
-  };
 
   const sendMessage1 = () => {
     if (messageText.trim() === "") {
@@ -190,11 +165,10 @@ const ChatDashboard = ({ route, navigation }) => {
 
   return (
     <ImageBackground style={styles.img_top} source={bgImg} resizeMode="cover">
-      {console.log(keyboardVerticalOffset)}
       <KeyboardAvoidingView
         style={styles.container}
         behavior="padding"
-        keyboardVerticalOffset={-466}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : -466}
         >
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -225,14 +199,17 @@ const ChatDashboard = ({ route, navigation }) => {
               {renderStatusIndicator(user?.status)}
             </View>
             <View style={styles.userInfo}>
-              <Text style={styles.userName}>
-                {conversation?.conversation_type == "group"
-                  ? conversation?.conversation_name
-                  : user?.first_name + " " + user?.last_name}{" "}
-                {user?.profile_manager ? (
-                  <Image source={profileManager} style={styles.pmImg} />
-                ) : null}
-              </Text>
+              <View>
+                  <Text style={styles.userName}>
+                    {conversation?.conversation_type == "group"
+                      ? conversation?.conversation_name
+                      : user?.first_name + " " + user?.last_name}{" "}
+                    {user?.profile_manager ? (
+                      <Image source={profileManager} style={styles.pmImg} />
+                    ) : null}
+                  </Text>
+                  <Text style={styles.chatType}>{conversation?.conversation_type == "group"? "(Group Chat)": "(Direct Chat)"}</Text>
+              </View>
               {user?.status ? (
                 <Text style={styles.userStatus}>{user?.status}</Text>
               ) : null}
@@ -318,6 +295,7 @@ const ChatDashboard = ({ route, navigation }) => {
             value={messageText}
             onChangeText={(text) => setMessageText(text)}
             editable={!isLoading}
+            underlineColorAndroid="transparent"
           />
           <TouchableOpacity
             style={styles.sendButton}
@@ -404,6 +382,10 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   userStatus: {
+    fontSize: 12,
+    color: "#777",
+  },
+  chatType:{
     fontSize: 14,
     color: "#777",
   },
@@ -425,7 +407,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 16,
+    padding: 14,
     backgroundColor: "#fff",
   },
   input: {
@@ -435,8 +417,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     paddingHorizontal: 16,
     marginRight: 10,
-    paddingVertical: 16,
-  },
+    paddingVertical: 10,
+    },
   sendButton: {
     backgroundColor: "#00c0ff",
     borderRadius: 30,
