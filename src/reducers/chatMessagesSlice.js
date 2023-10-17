@@ -93,4 +93,33 @@ export const sendMessage = (payload) => async () => {
   }
 };
 
+export const sendFileMessage = (payload) => async () => {
+  try {
+    const response = await axios.post(
+      `${CHAT_API_URL}/chat_send_file_message`,
+      payload,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    console.log(response);
+  } catch (error) {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      console.error('Response data:', error.response.data);
+      console.error('Status code:', error.response.status);
+      console.error('Headers:', error.response.headers);
+    } else if (error.request) {
+      // The request was made but no response was received
+      console.error('Request:', error.request);
+    } else {
+      // Something happened in setting up the request that triggered an error
+      console.error('Error message:', error.message);
+    }
+    console.error('Config:', error.config);
+  }
+};
+
 export default chatMessagesSlice.reducer;
