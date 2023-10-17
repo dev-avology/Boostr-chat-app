@@ -103,6 +103,7 @@ const ChatDashboard = ({ route, navigation }) => {
     return () => backHandler.remove();
   }, []);
 
+  
   const sendMessage1 = () => {
     if (messageText.trim() === "") {
       return;
