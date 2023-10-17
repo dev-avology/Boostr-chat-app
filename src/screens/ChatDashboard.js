@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
-  Dimensions,
   View,
   Text,
   StyleSheet,
@@ -18,7 +17,6 @@ import Icon from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import bgImg from "../assets/chat-bg.png";
 import userPlaceholder from "../assets/user1.png";
-import groupPlaceholder from "../assets/group_icons.png";
 import { useDispatch, useSelector } from "react-redux";
 import { memoizedSelectUserData, memoizeduserMessages } from "../selectors";
 import {
@@ -26,15 +24,9 @@ import {
   autofetchUserMessages,
   sendMessage,
   addMessage,
-  sendFileMessage
 } from "../reducers/chatMessagesSlice";
 import * as ImagePicker from "expo-image-picker";
 import profileManager from "../assets/pm.png";
-import Lightbox from "react-native-lightbox-v2";
-import { Video, ResizeMode } from "expo-av";
-
-const WINDOW_WIDTH = Dimensions.get("window").width;
-const BASE_PADDING = 10;
 
 const YOUR_REFRESH_INTERVAL = 5000;
 
@@ -50,8 +42,6 @@ const ChatDashboard = ({ route, navigation }) => {
 
   const conversation = route.params.conversation;
   const AsUser = route.params.AsUser;
-  const toggleState = route.params.toggleState;
-  const club = route.params.club;
   const user = conversation?.participants.find(
     (participant) => participant.user_id != AsUser
   );
@@ -103,7 +93,8 @@ const ChatDashboard = ({ route, navigation }) => {
 
     return () => backHandler.remove();
   }, []);
-  
+
+
   const sendMessage1 = () => {
     if (messageText.trim() === "") {
       return;
@@ -135,13 +126,7 @@ const ChatDashboard = ({ route, navigation }) => {
   };
 
   const goToUserProfile = () => {
-    navigation.navigate("UserProfile", {
-      conversation,
-      user,
-      AsUser,
-      toggleState,
-      club,
-    });
+    navigation.navigate("UserProfile", { conversation, user });
   };
 
   const pickImage = async () => {
@@ -149,38 +134,10 @@ const ChatDashboard = ({ route, navigation }) => {
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       CameraType: "Back",
+      aspect: [4, 3],
       quality: 0.5,
     });
-
     if (!result?.canceled) {
-      setIsLoading(true);
-      const newMessage = new FormData();
-
-      newMessage.append('file', {
-        uri: result?.assets[0]?.uri,
-        type: result?.assets[0]?.type,
-        name: result?.assets[0]?.fileName,
-      });
-
-      newMessage.append("sender_id", AsUser);
-      newMessage.append("conversation_id", conversation?.id || "");
-      newMessage.append("message_type", result?.assets[0]?.type);
-      newMessage.append("recipient_ids", recipient_ids);
-      newMessage.append("mentioned_user_ids", []);
-      console.log(newMessage);
-    dispatch(sendFileMessage(newMessage))
-      .then((data) => {
-        console.log(data);
-        //dispatch(addMessage(data.data));
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error sending message:", error);
-        setIsLoading(false);
-      });
-
-    flatlistRef.current.scrollToEnd();
-
     }
   };
 
@@ -237,8 +194,7 @@ const ChatDashboard = ({ route, navigation }) => {
                   style={styles.userImage}
                 />
               ) : (
-                
-                <Image source={conversation?.conversation_type == "group"?groupPlaceholder:userPlaceholder} style={styles.userImage} />
+                <Image source={userPlaceholder} style={styles.userImage} />
               )}
               {renderStatusIndicator(user?.status)}
             </View>
@@ -295,57 +251,16 @@ const ChatDashboard = ({ route, navigation }) => {
                       },
                     ]}
                   >
-                    {item.message_type === "text" && (
-                      <Text
-                        style={[
-                          styles.messageText,
-                          {
-                            color: item.sender_id === AsUser ? "#fff" : "#333",
-                          },
-                        ]}
-                      >
-                        {item.content}
-                      </Text>
-                    )}
-
-                    {item.message_type === "image" && (
-                      <Lightbox
-                        underlayColor="white"
-                        renderContent={() => (
-                          <Image
-                            source={{ uri: item.media_url }}
-                            style={styles.lightboximageStyle}
-                          />
-                        )}
-                      >
-                        <Image
-                          source={{ uri: item.media_url }}
-                          style={styles.imageStyle}
-                        />
-                      </Lightbox>
-                    )}
-
-                    {item.message_type === "video" && (
-                      <Lightbox
-                        underlayColor="white"
-                        renderContent={() => (
-                          <Video
-                            source={{ uri: item.media_url }}
-                            style={styles.lightboximageStyle}
-                            resizeMode="contain"
-                            useNativeControls
-                            autoplay={true}
-                          />
-                        )}
-                      >
-                        <Video
-                          useNativeControls={false}
-                          style={styles.videoPlayer}
-                          source={{ uri: item.media_url }}
-                          resizeMode="contain"
-                        />
-                      </Lightbox>
-                    )}
+                    <Text
+                      style={[
+                        styles.messageText,
+                        {
+                          color: item.sender_id == AsUser ? "#fff" : "#333",
+                        },
+                      ]}
+                    >
+                      {item.content}
+                    </Text>
                   </View>
                   {item.sender_id != AsUser ? (
                     <>
@@ -521,19 +436,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     justifyContent: "center",
     alignItems: "center",
-  },
-  imageStyle: {
-    width: 200,
-    height: 150,
-    objectFit: "contain",
-  },
-  lightboximageStyle: {
-    height: "100%",
-    width: "100%",
-  },
-  videoPlayer: {
-    width: 200,
-    height: 150,
   },
 });
 
