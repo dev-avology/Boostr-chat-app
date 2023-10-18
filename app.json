@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Booster Chat",
-    "slug": "booter-chat-app",
+    "name": "Booostr Chat",
+    "slug": "Booostr-chat-app",
     "platforms": [ "ios", "android" ],
     "version": "1.0.0",
     "orientation": "portrait",
@@ -26,13 +26,13 @@
       "fallbackToCacheTimeout": 0
     },
     "android": {
-      "package": "booster.chat.app",
+      "package": "Booostr.chat.app",
       "permissions": [ "CAMERA", "WRITE_EXTERNAL_STORAGE", "CAMERA_ROLL" ],
       "versionCode": 36
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "booster.chat.app",
+      "bundleIdentifier": "Booostr.chat.app",
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to let user put a photo in his profile page."
       }
