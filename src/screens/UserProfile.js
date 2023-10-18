@@ -74,7 +74,10 @@ const UserProfile = ({ route, navigation }) => {
             </>
           ) : (
             <>
-              <Image source={user1Img} style={styles.userImage} />
+             {user?.user_photo ? (
+                  <Image source={{uri:user.user_photo}} style={styles.userImage} />
+                ) : (<Image source={user1Img} style={styles.userImage} />)}
+              
               <Text style={styles.userName}>
                 {user?.first_name} {user?.last_name}{" "}
                 {user?.profile_manager ? (

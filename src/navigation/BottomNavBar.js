@@ -108,7 +108,7 @@ const BottomNavBar = ({ onSearch, toggleState, club, AsUser }) => {
             color={activeItem === "ClubList" ? "#00c0ff" : "#000"}
           />
         </TouchableOpacity>
-        {/* <TouchableOpacity
+        <TouchableOpacity
           style={[
             styles.iconButton,
             activeItem === "Search" && styles.activeNavItem,
@@ -118,9 +118,9 @@ const BottomNavBar = ({ onSearch, toggleState, club, AsUser }) => {
             name="search"
             size={24}
             color={activeItem === "Search" ? "#00c0ff" : "#000"}
-            onPress={toggleSearchBar}
+            // onPress={toggleSearchBar}
           />
-        </TouchableOpacity> */}
+        </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.iconButton,
