@@ -6,7 +6,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "splash": {
-      "image": "./src/assets/spl-logo.png",
+      "image": "./src/assets/spl-logo.jpg",
       "resizeMode": "contain",
       "backgroundColor": "#00c2ff"
     },
