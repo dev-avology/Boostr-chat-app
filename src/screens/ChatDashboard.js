@@ -27,6 +27,7 @@ import {
 } from "../reducers/chatMessagesSlice";
 import * as ImagePicker from "expo-image-picker";
 import profileManager from "../assets/pm.png";
+import groupPlaceholder from "../assets/group_icons.png";
 
 const YOUR_REFRESH_INTERVAL = 5000;
 
@@ -194,7 +195,7 @@ const ChatDashboard = ({ route, navigation }) => {
                   style={styles.userImage}
                 />
               ) : (
-                <Image source={userPlaceholder} style={styles.userImage} />
+                <Image source={conversation?.conversation_type == "group"?groupPlaceholder:userPlaceholder} style={styles.userImage} />
               )}
               {renderStatusIndicator(user?.status)}
             </View>
