@@ -114,12 +114,12 @@ const BottomNavBar = ({ onSearch, toggleState, club, AsUser }) => {
             activeItem === "Search" && styles.activeNavItem,
           ]}
         >
-          <FontAwesome
+          {/* <FontAwesome
             name="search"
             size={24}
             color={activeItem === "Search" ? "#00c0ff" : "#000"}
-            // onPress={toggleSearchBar}
-          />
+             onPress={toggleSearchBar}
+          /> */}
         </TouchableOpacity>
         <TouchableOpacity
           style={[

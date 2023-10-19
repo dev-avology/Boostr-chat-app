@@ -233,7 +233,7 @@ const ChatUserLists = ({ route, navigation }) => {
             {title.length > maxCharLimit ? title.substring(0, maxCharLimit) + '...': title}
           </Text>
         </View>
-        { club.role == 'manager' ? (  
+        { club.role === 'manager' ? (  
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.toggleButton} onPress={toggleShuffle}>
           <Text style={styles.toggleText}>{"As User"}</Text>

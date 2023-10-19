@@ -285,10 +285,10 @@ const ChatDashboard = ({ route, navigation }) => {
         </View>
         <View style={styles.inputContainer}>
           <TouchableOpacity style={styles.iconButton}>
-            <Icon name="ios-happy" size={24} color="#555" />
+            {/* <Icon name="ios-happy" size={24} color="#555" /> */}
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton} onPress={pickImage}>
-            <MaterialIcons name="attach-file" size={24} color="#555" />
+            {/* <MaterialIcons name="attach-file" size={24} color="#555" /> */}
           </TouchableOpacity>
           <TextInput
             style={styles.input}
