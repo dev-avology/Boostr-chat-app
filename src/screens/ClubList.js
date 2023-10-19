@@ -13,6 +13,41 @@ import { fetchClubList } from "../reducers/clubListSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { memoizedSelectclubList } from "../selectors";
 import { useFocusEffect } from "@react-navigation/native";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+
+const Tab = createMaterialTopTabNavigator();
+
+
+const ManagerClubScreen = ({clubs,renderItem})=>{
+return (<>
+                <SectionList
+                  sections={[
+                    {
+                      data: clubs,
+                    },
+                  ]}
+                  renderItem={renderItem}
+                  keyExtractor={(item) => item.post_id}
+                />
+
+</>);
+}
+
+const SupportClubScreen = ({clubs,renderItem})=>{
+  return (<>
+    <SectionList
+      sections={[
+        {
+          data: clubs,
+        },
+      ]}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.post_id}
+    />
+
+</>);
+}
+
 
 const ClubList = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -23,7 +58,6 @@ const ClubList = ({ navigation }) => {
   const handleClubClick = (club) => {
     navigation.navigate("ChatUserLists", { club });
   };
-
   const closeSearchBar = () => {
     setIsSearchBarVisible(false);
     setSearchText("");
@@ -90,7 +124,7 @@ const ClubList = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <Text style={styles.headerText}>Select a Club</Text>
+          {/* <Text style={styles.headerText}>Select a Club</Text> */}
           <Text style={styles.wrapText}>
             Choose a club you support or manage to join a chat.
           </Text>
@@ -107,15 +141,35 @@ const ClubList = ({ navigation }) => {
             <ActivityIndicator size="large" color="#000" />
           </View>
         ) : clubs.length > 0 ? (
-          <SectionList
-            sections={[
-              {
-                data: clubs,
-              },
-            ]}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.post_id}
-          />
+
+          <Tab.Navigator
+          screenOptions={{
+            tabBarLabelStyle: { fontSize: 15, fontWeight: 600 },
+            tabBarStyle: {},
+          }}
+          >
+
+         <Tab.Screen name="Managed Club" options={{ title: "Managed Club" }}>
+            {() =>
+               clubs.filter(item => item.role === "manager")?.length > 0 ? (
+                <ManagerClubScreen clubs={clubs.filter(item => item.role === "manager")}  renderItem={renderItem} ></ManagerClubScreen>
+              ) : (
+                <Text style={styles.notFound}>No Manger club found.</Text>
+              )
+            }
+          </Tab.Screen>
+          <Tab.Screen name="Supported Club" options={{ title: "Supported Club" }}>
+            {() =>
+              clubs.filter(item => item.role === "support")?.length > 0 ? (
+                <SupportClubScreen clubs={clubs.filter(item => item.role === "support")} renderItem={renderItem}></SupportClubScreen>
+              ) : (
+                <Text style={styles.notFound}>No support club found.</Text>
+              )
+            }
+          </Tab.Screen>
+          </Tab.Navigator>
+
+         
         ) : (
           <Text style={styles.notFound}>No clubs found.</Text>
         )}
@@ -141,7 +195,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#efefef",
   },
   wrapText: {
-    fontSize: 14,
+    fontSize: 12,
     marginTop: 3,
     color: "#777",
   },

@@ -233,6 +233,7 @@ const ChatUserLists = ({ route, navigation }) => {
             {title.length > maxCharLimit ? title.substring(0, maxCharLimit) + '...': title}
           </Text>
         </View>
+        { club.role == 'manager' ? (  
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.toggleButton} onPress={toggleShuffle}>
           <Text style={styles.toggleText}>{"As User"}</Text>
@@ -244,6 +245,8 @@ const ChatUserLists = ({ route, navigation }) => {
             <Text style={styles.toggleText}>{"As Club"}</Text>
           </TouchableOpacity>
         </View>
+        ):null}
+
       </View>
       {loading ? (
         <View style={styles.containerLoader}>
@@ -256,7 +259,6 @@ const ChatUserLists = ({ route, navigation }) => {
             tabBarLabelStyle: { fontSize: 15, fontWeight: 600 },
             tabBarStyle: {},
           }}
-          backBehavior="history"
         >
           <Tab.Screen name="Direct Chat" options={{ title: "Direct Chat" }}>
             {() =>
