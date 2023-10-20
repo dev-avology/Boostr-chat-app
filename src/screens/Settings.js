@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   userStatus: {
-    fontSize: 18,
+    fontSize: 14,
     color: "#777",
     marginTop: 5,
   },

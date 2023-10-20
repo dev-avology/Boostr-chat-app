@@ -15,12 +15,21 @@ import Icon from "react-native-vector-icons/Ionicons";
 import BottomNavBar from "../navigation/BottomNavBar";
 import profileManager from "../assets/pm.png";
 import { hideGroupConversation } from "../reducers/groupListSlice";
-import { useDispatch } from "react-redux";
-
+import { useDispatch,useSelector } from "react-redux";
+import {memoizedSelectUserData, memoizedSelectclubList } from "../selectors";
 const UserProfile = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-  const user = route.params?.user ? route.params?.user : [];
+
+  const currentUserData = useSelector(memoizedSelectUserData);
+  const currentClubData = useSelector(memoizedSelectclubList);
+
+  const clubList = (route.params == undefined && route.path == undefined) ? currentClubData?.clubs : [];
+  const clubCount = (route.params == undefined && route.path == undefined) ? currentClubData?.count: 0;
+
+
+  const user = route.params?.user ? route.params?.user : currentUserData;
+
   const AsUser = route.params?.user ? route.params?.AsUser : null;
   const club = route.params?.club ? route.params?.club : [];
   //const toggleState = route.params?.user ? route.params?.toggleState : null;
@@ -96,7 +105,10 @@ const UserProfile = ({ route, navigation }) => {
             </>
           ) : (
             <>
-              <Image source={user1Img} style={styles.userImage} />
+              {user?.user_photo ? (
+                  <Image source={{uri:user.user_photo}} style={styles.userImage} />
+                ) : (<Image source={user1Img} style={styles.userImage} />)}
+
               <Text style={styles.userName}>
                 {user?.first_name} {user?.last_name}{" "}
                 {user?.profile_manager ? (
@@ -107,6 +119,9 @@ const UserProfile = ({ route, navigation }) => {
               {user?.user_email ? (
                 <Text style={styles.emailText}>{user?.user_email}</Text>
               ) : null}
+               <Text style={styles.clubCount}>
+                {clubCount} Clubs
+              </Text>
             </>
           )}
           <ScrollView style={styles.clubListContainer}>
@@ -129,6 +144,24 @@ const UserProfile = ({ route, navigation }) => {
               </TouchableOpacity>
             ))}
           </ScrollView>
+          <ScrollView style={styles.clubListContainer}>
+            {clubList?.map((club, index) => (
+              <TouchableOpacity
+                style={styles.clubListItem}
+                key={index}
+                onPress={() => {
+                  alert(`Clicked on`);
+                }}
+              >
+                <Text style={styles.clubName}>
+                  {club?.post_title}{" "}
+                </Text>
+                <Text style={styles.clubRole}>{club?.role}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+
+
         </View>
         {is_group_admin ? (
           <TouchableOpacity
@@ -186,43 +219,43 @@ const styles = StyleSheet.create({
     objectFit: "contain",
   },
   userImage: {
-    width: 100,
-    height: 100,
+    width: 80,
+    height: 80,
     borderRadius: 50,
     borderColor: "#efefef",
     borderWidth: 1,
   },
   userName: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
     marginTop: 10,
   },
   userStatus: {
-    fontSize: 18,
+    fontSize: 15,
     color: "#777",
-    marginTop: 5,
+    marginTop: 0,
   },
   emailText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
-    marginTop: 10,
+    marginTop: 5,
   },
   clubListContainer: {
     marginTop: 20,
     width: "100%",
-    maxHeight: 270,
+    maxHeight: 170,
   },
   clubListItem: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 16,
+    paddingVertical: 12,
     paddingHorizontal: 16,
     borderColor: "#efefef",
     borderBottomWidth: 1,
   },
   clubName: {
     color: "#000",
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
   },
   clubRole: {

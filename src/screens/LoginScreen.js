@@ -79,7 +79,7 @@ const LoginScreen = ({ navigation }) => {
             </Text>
             <TextInput
               style={styles.input}
-              placeholder="Email"
+              placeholder="Email or Username"
               onChangeText={(text) => setEmail(text)}
               value={email}
             />

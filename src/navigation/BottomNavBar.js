@@ -198,7 +198,7 @@ const BottomNavBar = ({ onSearch, toggleState, club, AsUser }) => {
           duration={500}
           easing="ease-in-out"
         >
-          <Text style={styles.headingTexts}>Add User or Club</Text>
+          <Text style={styles.headingTexts}>{toggleState?"Add User":"Add User or Group"}</Text>
           <TouchableOpacity
             style={styles.overlayButton}
             onPress={handleAddContact}
@@ -210,7 +210,7 @@ const BottomNavBar = ({ onSearch, toggleState, club, AsUser }) => {
               style={styles.overlayButton}
               onPress={handleCreateGroup}
             >
-              <Text style={styles.buttonTexts}>Create Group</Text>
+              <Text style={styles.buttonTexts}>Add Group</Text>
             </TouchableOpacity>
           )}
         </Animatable.View>

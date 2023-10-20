@@ -20,6 +20,7 @@ import { fetchConversationsList } from "../reducers/conversationSlice";
 import GroupImg from "../assets/group_icons.png";
 import userPlaceholder from "../assets/user1.png";
 import profileManager from "../assets/pm.png";
+import { setTabIndex } from "../reducers/tabsSlice"
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -29,6 +30,12 @@ const UsersListScreen = ({
   renderStatusIndicator,
   userID,
 }) => {
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setTabIndex("Direct Chat")); 
+  }, [dispatch]);
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -92,6 +99,13 @@ const GroupsListScreen = ({ chatGroups, handleUserClick, userID }) => {
   const goToGroupss = () => {
     navigation.navigate("GroupChatDashboard");
   };
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setTabIndex("Group Chat")); 
+  }, [dispatch]);
+
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -132,6 +146,8 @@ const ChatUserLists = ({ route, navigation }) => {
   const Conversations = useSelector(memoizedConversations);
   const loading = useSelector((state) => state.conversations.loading);
   const error = useSelector((state) => state.conversations.error);
+  const activeTabIndex = useSelector((state) => state.tabs.tabIndex);
+
 
   const [chatUsers, setChatUsers] = useState([]);
   const [toggleState, setToggleState] = useState(true);
@@ -201,6 +217,9 @@ const ChatUserLists = ({ route, navigation }) => {
     return toggleState ? "As Club" : "As User";
   };
 
+  const maxCharLimit = 70;
+  const title = toggleState  ? userData?.first_name + " " + userData?.last_name : (club?.post_title || '');
+
   return (
     <>
       <View style={styles.header}>
@@ -213,21 +232,25 @@ const ChatUserLists = ({ route, navigation }) => {
         <View style={styles.headerLeft}>
           <Text style={styles.headerText}>
             Hello{" "}
-            {toggleState
-              ? userData?.first_name + " " + userData?.last_name
-              : club?.post_title}
+            {title.length > maxCharLimit ? title.substring(0, maxCharLimit) + '...': title}
           </Text>
         </View>
+
+
+        { club?.role === 'manager' ? (  
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.toggleButton} onPress={toggleShuffle}>
+          <Text style={styles.toggleText}>{"As User"}</Text>
             <FontAwesome
               name={!toggleState ? "toggle-on" : "toggle-off"}
-              size={32}
+              size={18}
               color="#000"
             />
-            <Text style={styles.toggleText}>{renderToggleText()}</Text>
+            <Text style={styles.toggleText}>{"As Club"}</Text>
           </TouchableOpacity>
         </View>
+        ):null}
+
       </View>
       {loading ? (
         <View style={styles.containerLoader}>
@@ -235,6 +258,7 @@ const ChatUserLists = ({ route, navigation }) => {
         </View>
       ) : (
         <Tab.Navigator
+          initialRouteName={`${activeTabIndex}`}
           screenOptions={{
             tabBarLabelStyle: { fontSize: 15, fontWeight: 600 },
             tabBarStyle: {},

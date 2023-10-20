@@ -211,7 +211,7 @@ const ChatDashboard = ({ route, navigation }) => {
       <KeyboardAvoidingView
         style={styles.container}
         behavior="padding"
-        keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 64 : -466}
       >
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -243,14 +243,17 @@ const ChatDashboard = ({ route, navigation }) => {
               {renderStatusIndicator(user?.status)}
             </View>
             <View style={styles.userInfo}>
-              <Text style={styles.userName}>
-                {conversation?.conversation_type == "group"
-                  ? conversation?.conversation_name
-                  : user?.first_name + " " + user?.last_name}{" "}
-                {user?.profile_manager ? (
-                  <Image source={profileManager} style={styles.pmImg} />
-                ) : null}
-              </Text>
+               <View>
+                  <Text style={styles.userName}>
+                    {conversation?.conversation_type == "group"
+                      ? conversation?.conversation_name
+                      : user?.first_name + " " + user?.last_name}{" "}
+                    {user?.profile_manager ? (
+                      <Image source={profileManager} style={styles.pmImg} />
+                    ) : null}
+                  </Text>
+                  <Text style={styles.chatType}>{conversation?.conversation_type == "group"? "(Group Chat)": "(Direct Chat)"}</Text>
+              </View>
               {user?.status ? (
                 <Text style={styles.userStatus}>{user?.status}</Text>
               ) : null}
@@ -373,10 +376,11 @@ const ChatDashboard = ({ route, navigation }) => {
           </TouchableOpacity>
           <TextInput
             style={styles.input}
-            placeholder="Type your message..."
+            placeholder="Message..."
             value={messageText}
             onChangeText={(text) => setMessageText(text)}
             editable={!isLoading}
+            underlineColorAndroid="transparent"
           />
           <TouchableOpacity
             style={styles.sendButton}
@@ -463,6 +467,10 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   userStatus: {
+    fontSize: 12,
+    color: "#777",
+  },
+  chatType:{
     fontSize: 14,
     color: "#777",
   },
@@ -484,7 +492,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 16,
+    padding: 14,
     backgroundColor: "#fff",
   },
   input: {
@@ -494,7 +502,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     paddingHorizontal: 16,
     marginRight: 10,
-    paddingVertical: 16,
+    paddingVertical: 10,
   },
   sendButton: {
     backgroundColor: "#00c0ff",
