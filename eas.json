@@ -21,7 +21,7 @@
         "buildType": "apk"
       },
       "ios": {
-        "buildConfiguration": "Debug"
+        "distribution": "internal"
       }
     },
     "simulator": {
