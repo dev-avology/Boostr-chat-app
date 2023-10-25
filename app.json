@@ -33,6 +33,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "Booostr.chat.app",
+      "buildNumber": "2",
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to let user put a photo in his profile page."
       }
