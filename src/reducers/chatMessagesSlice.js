@@ -93,18 +93,34 @@ export const sendMessage = (payload) => async () => {
   }
 };
 
-export const sendFileMessage = (payload) => async () => {
+export const sendFileMessage = (payload, result, recipientIds) => async () => {
   try {
+    const formData = new FormData();
+    const parts = result?.assets[0]?.uri.split('/');
+  const fileName = parts[parts.length - 1];
+    formData.append('file', {
+      uri: result?.assets[0]?.uri,
+      type: 'image/png',
+      name: fileName,
+    });
+    // Append the payload as form data
+    for (const key in payload) {
+      formData.append(key, payload[key]);
+    }
+
+    recipientIds.forEach((recipientId) => {
+      formData.append('recipient_ids[]', recipientId);
+    });
+
     const response = await axios.post(
       `${CHAT_API_URL}/chat_send_file_message`,
-      payload,
+      formData,
       {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       }
     );
-    console.log(response);
+
+    return response.data;
   } catch (error) {
     if (error.response) {
       // The request was made and the server responded with a status code

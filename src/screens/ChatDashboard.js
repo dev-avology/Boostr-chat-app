@@ -144,6 +144,17 @@ const ChatDashboard = ({ route, navigation }) => {
     });
   };
 
+  function determineMessageType(type) {
+    if (type) {
+      if (type.startsWith('image')) {
+        return 'image';
+      } else if (type.startsWith('video')) {
+        return 'video';
+      }
+    }
+    return 'file';
+  }
+
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -151,27 +162,22 @@ const ChatDashboard = ({ route, navigation }) => {
       CameraType: "Back",
       quality: 0.5,
     });
-
+    
     if (!result?.canceled) {
       setIsLoading(true);
-      const newMessage = new FormData();
+      const newMessage = {
+        content: messageText,
+        sender_id: AsUser,
+        conversation_id: conversation?.id,
+        message_type: determineMessageType(result?.assets[0]?.type),
+        media_url: "",
+        mentioned_user_ids: [],
+      };
 
-      newMessage.append('file', {
-        uri: result?.assets[0]?.uri,
-        type: result?.assets[0]?.type,
-        name: result?.assets[0]?.fileName,
-      });
-
-      newMessage.append("sender_id", AsUser);
-      newMessage.append("conversation_id", conversation?.id || "");
-      newMessage.append("message_type", result?.assets[0]?.type);
-      newMessage.append("recipient_ids", recipient_ids);
-      newMessage.append("mentioned_user_ids", []);
-      console.log(newMessage);
-    dispatch(sendFileMessage(newMessage))
+    dispatch(sendFileMessage(newMessage, result, recipient_ids))
       .then((data) => {
         console.log(data);
-        //dispatch(addMessage(data.data));
+        //dispatch(addMessage(data?.data?.data));
         setIsLoading(false);
       })
       .catch((error) => {

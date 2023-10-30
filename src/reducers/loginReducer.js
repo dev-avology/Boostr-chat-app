@@ -49,6 +49,13 @@ const authSlice = createSlice({
       state.CurrentUserID = action.payload;
       state.error = true;
     },
+    resetLogin: (state, action) => {
+      state.isLoggedIn = false,
+      state.CurrentUserID = null,
+      state.userData = null,
+      state.loading = false,
+      state.error = false
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(resetAllStates, (state) => {
@@ -65,6 +72,7 @@ export const {
   CurrentUserSuccess,
   CurrentUserError,
   setCurrentUseData,
+  resetLogin
 } = authSlice.actions;
 
 export const fetchUserData = (userId) => async (dispatch) => {

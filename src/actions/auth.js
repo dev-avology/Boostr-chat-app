@@ -2,6 +2,7 @@ import {
   loginSuccess,
   loginError,
   loginRequest,
+  resetLogin
 } from "../reducers/loginReducer";
 import { resetAllStates } from "../reducers/resetSlice";
 import AuthService from "../api";
@@ -33,8 +34,7 @@ export const login = (user) => (dispatch) => {
 export const logout = () => (dispatch) => {
   return AuthService.logOut().then((response) => {
     if (response.status === "success") {
-      dispatch(resetAllStates());
-      Promise.resolve();
+      dispatch(resetLogin());
       return response;
     }
   });
