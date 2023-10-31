@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import bgImg from "../assets/chat-bg.png";
+import user1 from "../assets/user1.png";
 import Icon from "react-native-vector-icons/Ionicons";
 import BottomNavBar from "../navigation/BottomNavBar";
 import { useDispatch, useSelector } from "react-redux";
@@ -97,10 +98,14 @@ const SettingsPage = ({ navigation }) => {
         {userData && !loading ? (
           <View style={styles.card}>
             <View style={styles.statusContainer}>
-              <Image
-                source={{ uri: userData?.user_photo }}
-                style={styles.userImage}
-              />
+            <Image
+              source={
+                userData?.user_photo
+                  ? { uri: userData?.user_photo }
+                  : user1
+              }
+              style={styles.userImage}
+            />
               {renderStatusIndicator(userData?.status)}
             </View>
             <Text style={styles.userName}>
@@ -179,7 +184,7 @@ const styles = StyleSheet.create({
     left: 0,
     flexDirection: "row",
     alignItems: "center",
-    paddingTop: Platform.OS == "ios" ? 40 : 20,
+    paddingTop: Platform.OS == "ios" ? 55 : 30,
     paddingBottom: 15,
     borderBottomWidth: 1,
     borderBottomColor: "#efefef",
