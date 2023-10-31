@@ -30,8 +30,12 @@ const BottomNavBar = ({ onSearch, toggleState, club, AsUser, onSearchTermChange 
   const navigation = useNavigation();
 
   const toggleSearchBar = () => {
-    setIsSearchBarVisible(!isSearchBarVisible);
-    setIsOverlayVisible(false);
+    if(onSearchTermChange){
+      setIsSearchBarVisible(!isSearchBarVisible);
+      setIsOverlayVisible(false);
+    }else{
+      alert('Please goto club list or chat list');
+    }
   };
 
   useEffect(() => {

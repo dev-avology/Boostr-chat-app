@@ -21,6 +21,7 @@ import GroupImg from "../assets/group_icons.png";
 import userPlaceholder from "../assets/user1.png";
 import profileManager from "../assets/pm.png";
 import { setTabIndex } from "../reducers/tabsSlice"
+import { searchArray } from "../searchUtils";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -154,6 +155,23 @@ const ChatUserLists = ({ route, navigation }) => {
   const [AsUser, setAsUser] = useState(userData?.user_id);
   const [chatGroups, setChatGroups] = useState([]);
   const dispatch = useDispatch();
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSearchTermChange = (newSearchTerm) => {
+    setSearchTerm(newSearchTerm);
+  };
+
+  const filteredchatUsers = searchArray(chatUsers, searchTerm, (item) => {
+    const match = item.participants.some((participant) => {
+      const fullName = `${participant.first_name} ${participant.last_name}`;
+      return fullName.toLowerCase().includes(searchTerm.toLowerCase());
+    });
+    return match;
+  });
+
+  const filteredchatGroups = searchArray(chatGroups, searchTerm, (item) => {
+    return item.conversation_name.toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
   useFocusEffect(
     React.useCallback(() => {
@@ -266,9 +284,9 @@ const ChatUserLists = ({ route, navigation }) => {
         >
           <Tab.Screen name="Direct Chat" options={{ title: "Direct Chat" }}>
             {() =>
-              chatUsers?.length > 0 ? (
+              filteredchatUsers?.length > 0 ? (
                 <UsersListScreen
-                  chatUsers={chatUsers}
+                  chatUsers={filteredchatUsers}
                   handleUserClick={handleUserClick}
                   renderStatusIndicator={renderStatusIndicator}
                   userID={AsUser}
@@ -280,9 +298,9 @@ const ChatUserLists = ({ route, navigation }) => {
           </Tab.Screen>
           <Tab.Screen name="Group Chat" options={{ title: "Groups Chat" }}>
             {() =>
-              chatGroups?.length > 0 ? (
+              filteredchatGroups?.length > 0 ? (
                 <GroupsListScreen
-                  chatGroups={chatGroups}
+                  chatGroups={filteredchatGroups}
                   handleUserClick={handleUserClick}
                   userID={AsUser}
                 />
@@ -293,7 +311,7 @@ const ChatUserLists = ({ route, navigation }) => {
           </Tab.Screen>
         </Tab.Navigator>
       )}
-      <BottomNavBar toggleState={toggleState} club={club} AsUser={AsUser} />
+      <BottomNavBar toggleState={toggleState} club={club} AsUser={AsUser} onSearchTermChange={handleSearchTermChange}/>
     </>
   );
 };
