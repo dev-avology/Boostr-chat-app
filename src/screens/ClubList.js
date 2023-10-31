@@ -277,6 +277,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 20,
     padding: 20,
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   containerLoader: {
     flex: 1,
