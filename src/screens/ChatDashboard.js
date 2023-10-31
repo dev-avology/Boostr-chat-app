@@ -184,8 +184,7 @@ const ChatDashboard = ({ route, navigation }) => {
 
     dispatch(sendFileMessage(newMessage, result, recipient_ids))
       .then((data) => {
-        console.log(data);
-        //dispatch(addMessage(data?.data?.data));
+        dispatch(addMessage(data?.data?.data));
         setIsLoading(false);
       })
       .catch((error) => {
