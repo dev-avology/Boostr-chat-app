@@ -156,6 +156,16 @@ const ChatDashboard = ({ route, navigation }) => {
   }
 
   const pickImage = async () => {
+
+    let { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (status !== 'granted') {
+      alert('Permission to access media library is required to pick an image.');
+      return;
+    }
+
+
+    
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
