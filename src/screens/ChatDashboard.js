@@ -164,8 +164,6 @@ const ChatDashboard = ({ route, navigation }) => {
       return;
     }
 
-
-    
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
