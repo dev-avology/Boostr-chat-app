@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { memoizedSelectclubList } from "../selectors";
 import { useFocusEffect } from "@react-navigation/native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { searchArray } from "../searchUtils";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -56,16 +57,19 @@ const ClubList = ({ navigation }) => {
   const dispatch = useDispatch();
   const [clubs, setClubs] = useState([]);
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false);
-  const [searchText, setSearchText] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleClubClick = (club) => {
     navigation.navigate("ChatUserLists", { club });
   };
 
-  const closeSearchBar = () => {
-    setIsSearchBarVisible(false);
-    setSearchText("");
+  const handleSearchTermChange = (newSearchTerm) => {
+    setSearchTerm(newSearchTerm);
   };
+
+  const filteredClubs = searchArray(clubs, searchTerm, (item) => {
+    return item.post_title.toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
@@ -153,8 +157,8 @@ const ClubList = ({ navigation }) => {
           >
          <Tab.Screen name="Managed Club" options={{ title: "Managed Club" }}>
             {() =>
-               clubs.filter(item => item.role === "manager")?.length > 0 ? (
-                <ManagerClubScreen clubs={clubs.filter(item => item.role === "manager")}  renderItem={renderItem} ></ManagerClubScreen>
+               filteredClubs.filter(item => item.role === "manager")?.length > 0 ? (
+                <ManagerClubScreen clubs={filteredClubs.filter(item => item.role === "manager")}  renderItem={renderItem} ></ManagerClubScreen>
               ) : (
                 <Text style={styles.notFound}>No Manger club found.</Text>
               )
@@ -162,8 +166,8 @@ const ClubList = ({ navigation }) => {
           </Tab.Screen>
           <Tab.Screen name="Supported Club" options={{ title: "Supported Club" }}>
             {() =>
-              clubs.filter(item => item.role === "support")?.length > 0 ? (
-                <SupportClubScreen clubs={clubs.filter(item => item.role === "support")} renderItem={renderItem}></SupportClubScreen>
+              filteredClubs.filter(item => item.role === "support")?.length > 0 ? (
+                <SupportClubScreen clubs={filteredClubs.filter(item => item.role === "support")} renderItem={renderItem}></SupportClubScreen>
               ) : (
                 <Text style={styles.notFound}>No support club found.</Text>
               )
@@ -175,7 +179,7 @@ const ClubList = ({ navigation }) => {
           <Text style={styles.notFound}>No clubs found.</Text>
         )}
       </View>
-      <BottomNavBar />
+      <BottomNavBar onSearchTermChange={handleSearchTermChange}/>
     </View>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   StyleSheet,
@@ -17,11 +17,12 @@ import {
 } from "@react-navigation/native";
 import * as Animatable from "react-native-animatable";
 
-const BottomNavBar = ({ onSearch, toggleState, club, AsUser }) => {
+const BottomNavBar = ({ onSearch, toggleState, club, AsUser, onSearchTermChange }) => {
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false);
-  const [searchText, setSearchText] = useState("");
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const [activeItem, setActiveItem] = useState("Home");
+
+  const searchInputRef = useRef(null);
 
   const isFocused = useIsFocused();
   const route = useRoute(); // Get the current route
@@ -31,11 +32,6 @@ const BottomNavBar = ({ onSearch, toggleState, club, AsUser }) => {
   const toggleSearchBar = () => {
     setIsSearchBarVisible(!isSearchBarVisible);
     setIsOverlayVisible(false);
-  };
-
-  const handleSearch = () => {
-    onSearch(searchText);
-    setSearchText("");
   };
 
   useEffect(() => {
@@ -171,13 +167,25 @@ const BottomNavBar = ({ onSearch, toggleState, club, AsUser }) => {
       {isSearchBarVisible && (
         <View style={styles.searchBarContainer}>
           <TextInput
+            ref={searchInputRef}
             style={styles.searchInput}
             placeholder="Search"
-            value={searchText}
-            onChangeText={(text) => setSearchText(text)}
-            onSubmitEditing={handleSearch}
+            //onChangeText={(text) => onSearchTermChange(text)}
+            //onSubmitEditing={(e) => onSearchTermChange(e.nativeEvent.text)}
+            onChangeText={(e) => {
+              searchInputRef.current.value = e;
+              onSearchTermChange(e);
+            }}
+            onSubmitEditing={() => {
+              const searchTerm = searchInputRef.current.value;
+              console.log(searchTerm);
+              onSearchTermChange(searchTerm);
+            }}
           />
-          <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+          <TouchableOpacity style={styles.searchButton} onPress={() => {
+            const searchTerm = searchInputRef.current.value;
+            onSearchTermChange(searchTerm);
+          }}>
             <FontAwesome
               name="search"
               size={20}
@@ -198,7 +206,7 @@ const BottomNavBar = ({ onSearch, toggleState, club, AsUser }) => {
           duration={500}
           easing="ease-in-out"
         >
-          <Text style={styles.headingTexts}>{toggleState?"Add User":"Add User or Group"}</Text>
+          <Text style={styles.headingTexts}>{toggleState ? "Add User" : "Add User or Group"}</Text>
           <TouchableOpacity
             style={styles.overlayButton}
             onPress={handleAddContact}
