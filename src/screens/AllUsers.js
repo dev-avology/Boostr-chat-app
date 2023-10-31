@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     paddingBottom: 25,
     borderBottomWidth: 1,
     borderBottomColor: "#efefef",
-    backgroundColor: "#fff",
+    backgroundColor: "#f7f7f7",
   },
   headerText: {
     color: "#000",

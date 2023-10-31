@@ -141,8 +141,8 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS == 'ios' ? 55 : 30,
     paddingBottom: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#efefef',
-    backgroundColor: '#fff',
+    borderBottomColor: "#efefef",
+    backgroundColor: "#f7f7f7",
   },
   backIcon: {
     width: 24,

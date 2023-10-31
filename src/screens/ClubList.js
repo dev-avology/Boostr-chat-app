@@ -198,6 +198,7 @@ const styles = StyleSheet.create({
     padding: 8,
     borderBottomWidth: 1,
     borderBottomColor: "#efefef",
+    backgroundColor:"#fdfdfd"
   },
   wrapText: {
     fontSize: 14,

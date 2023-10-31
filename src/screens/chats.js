@@ -338,6 +338,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#efefef",
+    backgroundColor:"#fdfdfd"
   },
   img_top: {
     height: "100%",

@@ -217,7 +217,7 @@ const ChatDashboard = ({ route, navigation }) => {
       <KeyboardAvoidingView
         style={styles.container}
         behavior="padding"
-        keyboardVerticalOffset={Platform.OS === "ios" ? 64 : -466}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -466}
       >
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
