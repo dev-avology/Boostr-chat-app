@@ -21,7 +21,6 @@
         "buildType": "apk"
       },
       "ios": {
-        "companyName": "Booostr Technologies, Inc.",
         "buildConfiguration": "Debug"
       }
     },
