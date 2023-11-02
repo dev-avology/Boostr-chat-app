@@ -182,7 +182,6 @@ const BottomNavBar = ({ onSearch, toggleState, club, AsUser, onSearchTermChange 
             }}
             onSubmitEditing={() => {
               const searchTerm = searchInputRef.current.value;
-              console.log(searchTerm);
               onSearchTermChange(searchTerm);
             }}
           />
@@ -282,13 +281,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   iconButton: {
-    padding: 8,
+    width: 50,
+    height: 50,
+    borderRadius:8,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  activeNavItem: {
+    backgroundColor:"#efefef"
   },
   middleButton: {
-    width: 80,
+    width: 50,
     height: 50,
     backgroundColor: "#00c0ff",
-    borderRadius: 6,
+    borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
   },

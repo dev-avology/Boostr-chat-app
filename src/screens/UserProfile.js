@@ -62,7 +62,7 @@ const UserProfile = ({ route, navigation }) => {
   const handleRemoveGroup = () => {
     setIsLoading(true);
     let payload = {
-      club_id: conversation?.id,
+      club_id: conversation?.club_id,
       group_id: conversation?.contact_group_id,
     };
     dispatch(hideGroupConversation(payload))
@@ -119,9 +119,9 @@ const UserProfile = ({ route, navigation }) => {
               {user?.user_email ? (
                 <Text style={styles.emailText}>{user?.user_email}</Text>
               ) : null}
-               <Text style={styles.clubCount}>
+               {clubCount != 0 ? <Text style={styles.clubCount}>
                 {clubCount} Clubs
-              </Text>
+              </Text> : null}
             </>
           )}
           <ScrollView style={styles.clubListContainer}>
@@ -265,6 +265,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginLeft: 10,
+    marginRight: 10,
   },
   backIcon: {
     width: 24,
@@ -272,8 +273,9 @@ const styles = StyleSheet.create({
   },
   headerText: {
     color: "#000",
-    fontSize: 16,
-    fontWeight: "700",
+    fontSize: 20,
+    fontWeight: "bold",
+    marginLeft: 10,
   },
   headerTextView: {
     flex: 1,

@@ -14,7 +14,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import BottomNavBar from "../navigation/BottomNavBar";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../actions/auth";
-import { fetchUserData } from "../reducers/loginReducer";
+import { fetchUserData} from "../reducers/loginReducer";
 import { memoizedSelectUserData } from "../selectors";
 
 const SettingsPage = ({ navigation }) => {
@@ -30,7 +30,7 @@ const SettingsPage = ({ navigation }) => {
       case "online":
         return "#0F0";
       case "offline":
-        return "#F00";
+        return "#777";
       case "away":
         return "gray";
       default:
@@ -64,7 +64,7 @@ const SettingsPage = ({ navigation }) => {
   const handleChangePassword = () => {};
 
   const handleLogout = () => {
-    dispatch(logout()).then((response) => {
+    dispatch(logout(CurrentUserID)).then((response) => {
       if (response.status === "success") {
         navigation.reset({
           index: 0,

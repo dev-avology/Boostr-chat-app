@@ -31,6 +31,9 @@ const authSlice = createSlice({
       state.isLoggedIn = false;
       state.error = true;
     },
+    logoutRequest: (state) => {
+      state.loading = true;
+    },
     CurrentUserRequest: (state) => {
       state.loading = true;
       state.error = false;
@@ -72,7 +75,8 @@ export const {
   CurrentUserSuccess,
   CurrentUserError,
   setCurrentUseData,
-  resetLogin
+  resetLogin,
+  logoutRequest
 } = authSlice.actions;
 
 export const fetchUserData = (userId) => async (dispatch) => {

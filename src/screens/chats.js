@@ -204,7 +204,7 @@ const ChatUserLists = ({ route, navigation }) => {
       case "online":
         return "#0F0";
       case "offline":
-        return "#F00";
+        return "#777";
       case "away":
         return "gray";
       default:

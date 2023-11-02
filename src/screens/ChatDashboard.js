@@ -202,7 +202,7 @@ const ChatDashboard = ({ route, navigation }) => {
       case "online":
         return "#0F0";
       case "offline":
-        return "#F00";
+        return "#777";
       case "away":
         return "gray";
       default:
@@ -227,7 +227,7 @@ const ChatDashboard = ({ route, navigation }) => {
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -466}
       >
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Icon
               name="arrow-back"
               size={24}
@@ -442,10 +442,13 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
   },
-
+  backButton: {
+    marginLeft: 10,
+  },
   backIcon: {
     width: 24,
     height: 24,
+    marginRight:10
   },
   userImage: {
     width: 45,
