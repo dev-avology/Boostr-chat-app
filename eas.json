@@ -40,7 +40,6 @@
   },
   "submit": {
     "production": {
-      "distribution": "internal",
       "ios": {
         "companyName": "Booostr Technologies, Inc."
       }
