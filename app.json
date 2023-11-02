@@ -26,13 +26,13 @@
       "fallbackToCacheTimeout": 0
     },
     "android": {
-      "package": "Booster.chat.app",
+      "package": "Booostr.chat.app",
       "permissions": [ "CAMERA", "WRITE_EXTERNAL_STORAGE", "CAMERA_ROLL" ],
       "versionCode": 36
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "Booster.chat.app",
+      "bundleIdentifier": "Booostr.chat.app",
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to let user put a photo in his profile page."
       }

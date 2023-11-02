@@ -38,6 +38,10 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "companyName": "Booostr Technologies, Inc."
+      }
+    }
   }
 }
