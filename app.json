@@ -33,6 +33,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "Booster.chat.app",
+      "buildNumber": "2",
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to let user put a photo in his profile page."
       }
