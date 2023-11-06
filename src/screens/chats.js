@@ -34,7 +34,7 @@ const UsersListScreen = ({
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setTabIndex("Direct Chat")); 
+    //dispatch(setTabIndex("Direct Chat")); 
   }, [dispatch]);
 
   return (
@@ -103,7 +103,7 @@ const GroupsListScreen = ({ chatGroups, handleUserClick, userID }) => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setTabIndex("Group Chat")); 
+    //dispatch(setTabIndex("Group Chat")); 
   }, [dispatch]);
 
 
@@ -149,7 +149,6 @@ const ChatUserLists = ({ route, navigation }) => {
   const error = useSelector((state) => state.conversations.error);
   const activeTabIndex = useSelector((state) => state.tabs.tabIndex);
 
-
   const [chatUsers, setChatUsers] = useState([]);
   const [toggleState, setToggleState] = useState(true);
   const [AsUser, setAsUser] = useState(userData?.user_id);
@@ -175,6 +174,7 @@ const ChatUserLists = ({ route, navigation }) => {
 
   useFocusEffect(
     React.useCallback(() => {
+      dispatch(setTabIndex("Direct Chat"));
       const fetchData = async () => {
         try {
           if (toggleState) {
@@ -189,7 +189,6 @@ const ChatUserLists = ({ route, navigation }) => {
           console.error("Error fetching data:", error);
         }
       };
-
       fetchData();
     }, [toggleState])
   );
